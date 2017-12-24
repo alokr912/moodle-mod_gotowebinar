@@ -24,9 +24,8 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         $mform->addElement('text', 'name', get_string('meetingname', 'gotowebinar'));
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('meetingnamerequired', 'gotowebinar'), 'required', '', 'server');
-        // $this->standard_intro_elements(get_string('gotowebinarintro', 'gotowebinar'));
-        // Adding a new text editor
-        $this->add_intro_editor(true, get_string('gotowebinarintro', 'gotowebinar'));
+         $this->standard_intro_elements(get_string('gotowebinarintro', 'gotowebinar'));
+       
         
         
         $mform->addElement('header', 'meetingheader', get_string('meetingheader', 'gotowebinar'));
