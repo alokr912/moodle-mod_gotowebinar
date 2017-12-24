@@ -7,11 +7,11 @@
  * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
+defined('MOODLE_INTERNAL') || die;
 
 function createGoToWebibnar($gotowebinar) {
-    global $USER, $DB;
-
+    global $USER, $DB, $CFG;
+    require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
     OSD::setup(trim($config->consumer_key));
     OSD::authenticate_with_password(trim($config->userid), trim($config->password));
@@ -44,7 +44,8 @@ function createGoToWebibnar($gotowebinar) {
 function updateGoToWebinar($oldgotowebinar, $gotowebinar) {
 
 
-    global $USER, $DB;
+    global $USER, $DB, $CFG;
+    require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
     OSD::setup(trim($config->consumer_key));
     OSD::authenticate_with_password(trim($config->userid), trim($config->password));
@@ -72,7 +73,8 @@ function updateGoToWebinar($oldgotowebinar, $gotowebinar) {
 }
 
 function deleteGoToWebinar($gotoid) {
-    global $USER, $DB;
+    global $USER, $DB, $CFG;
+    require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
     OSD::setup(trim($config->gotowebinar_consumer_key));
     OSD::authenticate_with_password(trim($config->gotowebinar_userid), trim($config->gotowebinar_password));
@@ -86,8 +88,9 @@ function deleteGoToWebinar($gotoid) {
 }
 
 function get_gotowebinar($gotowebinar) {
-  
-    global $USER, $DB;
+
+    global $USER, $DB, $CFG;
+    require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
     $context = context_course::instance($gotowebinar->course);
     OSD::setup(trim($config->consumer_key));
@@ -114,7 +117,7 @@ function get_gotowebinar($gotowebinar) {
         }
     }
     // Now register and check registrant 
-    $registrant = $DB->get_record('gotowebinar_registrant', array( 'userid' => $USER->id, 'gotowebinarid' => $gotowebinar->gotoid));
+    $registrant = $DB->get_record('gotowebinar_registrant', array('userid' => $USER->id, 'gotowebinarid' => $gotowebinar->webinarkey));
     if ($registrant) {
         return $registrant->joinurl;
     } else {
@@ -139,7 +142,7 @@ function get_gotowebinar($gotowebinar) {
         $attributes['responses'] = array(array('questionKey' => 0, 'responseText' => '', 'answerKey' => 0));
 
 
-        $response = OSD::post("/G2W/rest/organizers/{$organiser_key}/webinars/{$gotowebinar->gotoid}/registrants", $attributes);
+        $response = OSD::post("/G2W/rest/organizers/{$organiser_key}/webinars/{$gotowebinar->webinarkey}/registrants", $attributes);
 
         if ($response && $response->status == 201) {
             $registrstioninfo = json_decode($response->body);
@@ -160,6 +163,8 @@ function get_gotowebinar($gotowebinar) {
 }
 
 function get_gotowebinarinfo($gotowebinar) {
+    global $CFG;
+    require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
     $context = context_course::instance($gotowebinar->course);
     OSD::setup(trim($config->gotowebinar_consumer_key));

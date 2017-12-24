@@ -9,11 +9,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-//require_once 'locallib.php';
 require_once $CFG->dirroot . '/calendar/lib.php';
 
-//ini_set('display_errors', 1);
-//ini_set('error_reporting',E_ALL);
 function gotowebinar_add_instance($data, $mform = null) {
 
     global $USER, $DB;
