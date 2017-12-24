@@ -30,7 +30,7 @@ class backup_gotowebinar_activity_structure_step extends backup_activity_structu
                                                               'gotoid', 'timecreated', 'timemodified'));
         $gotowebinar->add_child($gotowebinar_registrants);
         $gotowebinar->set_source_table('gotowebinar', array('id' => backup::VAR_ACTIVITYID));
-        $gotowebinar_registrants->set_source_sql('SELECT * FROM {gotowebinar_registrants}  WHERE instanceid = ?', array(backup::VAR_PARENTID));
+        $gotowebinar_registrants->set_source_sql('SELECT * FROM {gotowebinar_registrant}  WHERE gotowebinarid = ?', array(backup::VAR_PARENTID));
          return $this->prepare_activity_structure($gotowebinar);
     }
 
