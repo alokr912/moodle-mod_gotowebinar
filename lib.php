@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * GoToWebinar module  library file 
  *
@@ -16,19 +15,19 @@ function gotowebinar_add_instance($data, $mform = null) {
     global $USER, $DB;
 
     $response = createGoToWebibnar($data);
-   
+
     if ($response && $response->status == 201) {
         $data->userid = $USER->id;
         $data->timecreated = time();
         $data->timemodified = time();
         $data->meetinfo = trim($response->body, '"');
         $jsonresponse = json_decode($response->body);
-        $data->webinarkey = $jsonresponse->webinarKey;    
+        $data->webinarkey = $jsonresponse->webinarKey;
 
 
         $data->id = $DB->insert_record('gotowebinar', $data);
     }
-   
+
     if (!empty($data->id)) {
         // Add event to calendar
         $event = new stdClass();
@@ -44,22 +43,17 @@ function gotowebinar_add_instance($data, $mform = null) {
         $event->visible = 1;
         $event->modulename = 'gotowebinar';
         calendar_event::create($event);
-        
+
         $event = \mod_gotowebinar\event\gotowebinar_created::create(array(
-                'objectid' => $data->id,
-                'context' => context_module::instance($data->coursemodule),
-                'other' => array('modulename' => $data->name, 'startdatetime' => $data->startdatetime),
-    ));
-    $event->trigger();
-     return $data->id;
-    }else {
+                    'objectid' => $data->id,
+                    'context' => context_module::instance($data->coursemodule),
+                    'other' => array('modulename' => $data->name, 'startdatetime' => $data->startdatetime),
+        ));
+        $event->trigger();
+        return $data->id;
+    } else {
         return FALSE;
     }
-
-
-    
-
-   
 }
 
 /**
@@ -103,15 +97,10 @@ function gotowebinar_update_instance($gotowebinar) {
         return false;
     }
     $result = false;
-    if ($oldgotowebinar->meetingtype == 'gotomeeting' && $gotowebinar->meetingtype == 'gotomeeting') {
-        $result = updateGoToMeeting($oldgotowebinar, $gotowebinar);
-    } else if ($oldgotowebinar->meetingtype == 'gotowebinar' && $gotowebinar->meetingtype == 'gotowebinar') {
-        $result = updateGoToWebinar($oldgotowebinar, $gotowebinar);
-    } else if ($oldgotowebinar->meetingtype == 'gototraining' && $gotowebinar->meetingtype == 'gototraining') {
-        $result = updateGoToTraining($oldgotowebinar, $gotowebinar);
-    }
+    $result = updateGoToWebinar($oldgotowebinar, $gotowebinar);
+   
     if ($result) {
-
+        $result = false;
         $oldgotowebinar->name = $gotowebinar->name;
         $oldgotowebinar->intro = $gotowebinar->intro;
         $oldgotowebinar->startdatetime = $gotowebinar->startdatetime;
@@ -140,8 +129,10 @@ function gotowebinar_update_instance($gotowebinar) {
             $event->modulename = 'gotowebinar';
             $calendarevent = calendar_event::load($eventid);
             $calendarevent->update($event);
+            $result = true;
         }
     }
+  
     $event = \mod_gotowebinar\event\gotowebinar_updated::create(array(
                 'objectid' => $gotowebinar->instance,
                 'context' => context_module::instance($gotowebinar->coursemodule),
@@ -161,6 +152,7 @@ function gotowebinar_update_instance($gotowebinar) {
  */
 function gotowebinar_delete_instance($id) {
     global $DB, $CFG;
+    require_once($CFG->dirroot.'/mod/gotowebinar/locallib.php');
 
     $result = false;
     if (!$gotowebinar = $DB->get_record('gotowebinar', array('id' => $id))) {
@@ -171,22 +163,14 @@ function gotowebinar_delete_instance($id) {
         return false;
     }
     $context = context_module::instance($cm->id);
-    if ($gotowebinar->meetingtype == 'gotomeeting') {
-        if (deleteGoToMeeting($gotowebinar->gotoid)) {
-            $params = array('id' => $gotowebinar->id);
-            $result = $DB->delete_records('gotowebinar', $params);
-        }
-    } else if ($gotowebinar->meetingtype == 'gotowebinar') {
-        if (deleteGoToWebinar($gotowebinar->gotoid)) {
-            $params = array('id' => $gotowebinar->id);
-            $result = $DB->delete_records('gotowebinar', $params);
-        }
-    } else if ($gotowebinar->meetingtype == 'gototraining') {
-        if (deleteGoToTraining((int) $gotowebinar->gotoid)) {
-            $params = array('id' => $gotowebinar->id);
-            $result = $DB->delete_records('gotowebinar', $params);
-        }
+     
+
+    if (deleteGoToWebinar($gotowebinar->webinarkey)) {
+        $params = array('id' => $gotowebinar->id);
+        $result = $DB->delete_records('gotowebinar', $params);
+        
     }
+      
     // Delete calendar  event
     $param = array('courseid' => $gotowebinar->course, 'instance' => $gotowebinar->id,
         'groupid' => 0, 'modulename' => 'gotowebinar');
@@ -196,17 +180,17 @@ function gotowebinar_delete_instance($id) {
         $calendarevent = calendar_event::load($eventid);
         $calendarevent->delete();
     }
-
+     
     $event = \mod_gotowebinar\event\gotowebinar_deleted::create(array(
                 'objectid' => $id,
                 'context' => $context,
                 'other' => array('modulename' => $gotowebinar->name, 'startdatetime' => $gotowebinar->startdatetime),
     ));
-
+        
 
     $event->trigger();
 
-
+      
 
     return $result;
 }
