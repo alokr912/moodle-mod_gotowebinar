@@ -46,7 +46,7 @@ function updateGoToWebinar($oldgotowebinar, $gotowebinar) {
 
     global $USER, $DB, $CFG;
     require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
-    $config = get_config('gotowebinar');
+    $config = get_config('gotowebinar'); 
     OSD::setup(trim($config->consumer_key));
     OSD::authenticate_with_password(trim($config->userid), trim($config->password));
     $attributes = array();
@@ -62,9 +62,9 @@ function updateGoToWebinar($oldgotowebinar, $gotowebinar) {
     $endtdate = usergetdate(usertime($gotowebinar->enddatetime - $dstoffset));
     $timearray['endTime'] = $endtdate['year'] . '-' . $endtdate['mon'] . '-' . $endtdate['mday'] . 'T' . $endtdate['hours'] . ':' . $endtdate['minutes'] . ':' . $endtdate['seconds'] . 'Z';
     $attributes['times'] = array($timearray);
-    $key = (int) OSD::$oauth->organizer_key;
+    $key =  OSD::$oauth->organizer_key;
 
-    $response = OSD::request('PUT', "/G2W/rest/organizers/{$key}/webinars/{$oldgotowebinar->gotoid}", $attributes);
+    $response = OSD::request('PUT', "/G2W/rest/organizers/{$key}/webinars/{$oldgotowebinar->webinarkey}", $attributes);
 
     if ($response && $response->status == 202) {
         return true;
@@ -72,17 +72,19 @@ function updateGoToWebinar($oldgotowebinar, $gotowebinar) {
     return false;
 }
 
-function deleteGoToWebinar($gotoid) {
+function deleteGoToWebinar($webinarkey) {
     global $USER, $DB, $CFG;
+   
     require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
-    OSD::setup(trim($config->gotowebinar_consumer_key));
-    OSD::authenticate_with_password(trim($config->gotowebinar_userid), trim($config->gotowebinar_password));
-    $key = (int) OSD::$oauth->organizer_key;
-    $responce = OSD::request('DELETE', "/G2W/rest/organizers/{$key}/webinars/{$gotoid}");
+    OSD::setup(trim($config->consumer_key));
+    OSD::authenticate_with_password(trim($config->userid), trim($config->password));
+    $key =  OSD::$oauth->organizer_key;
+    $responce = OSD::request('DELETE', "/G2W/rest/organizers/{$key}/webinars/{$webinarkey}");
     if ($responce->status == 204) {
         return true;
     } else {
+       
         return false;
     }
 }
@@ -152,7 +154,7 @@ function get_gotowebinar($gotowebinar) {
             $gotowebinar_registrant->joinurl = $registrstioninfo->joinUrl;
             $gotowebinar_registrant->registrantkey = $registrstioninfo->registrantKey;
             $gotowebinar_registrant->userid = $USER->id;
-            $gotowebinar_registrant->gotoid = $gotowebinar->gotoid;
+            $gotowebinar_registrant->webinarkey = $gotowebinar->webinarkey;
             $gotowebinar_registrant->timecreated = time();
             $gotowebinar_registrant->timemodified = time();
             $gotowebinar_registrant->id = $DB->insert_record('gotowebinar_registrant', $gotowebinar_registrant);
