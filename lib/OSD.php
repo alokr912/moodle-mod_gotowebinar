@@ -3,16 +3,16 @@
 class OSD {
 
     public static $oauth, $session_manager, $last_response, $auth_type;
-    public static $url, $client_id, $secret, $ch, $headers;
+    public static $url, $client_id, $client_secret, $ch, $headers;
 
     const GET = 'GET';
     const POST = 'POST';
 
-    public static function setup($client_id, $options = array('session_manager' => 'OSDSession', 'curl_options' => array())) {
+    public static function setup($client_id, $client_secret, $options = array('session_manager' => 'OSDSession', 'curl_options' => array())) {
         // Setup client info
 
         self::$client_id = $client_id;
-
+        self::$client_secret = $client_secret;
         // Setup curl
         self::$url = empty($options['api_url']) ? 'https://api.getgo.com' : $options['api_url'];
         self::$ch = curl_init();
@@ -67,10 +67,10 @@ class OSD {
         $attributes = array();
         $attributes['client_id'] = trim(self::$client_id);
         $attributes['grant_type'] = 'password';
-        $attributes['user_id'] = $user_id;
+        $attributes['username'] = $user_id;
         $attributes['password'] = $password;
 
-        $response = self::request(self::POST, '/oauth/access_token', $attributes, array('oauth_request' => true));
+        $response = self::request(self::POST, '/oauth/v2/token', $attributes, array('oauth_request' => true));
 
         if ($response) {
 
@@ -128,6 +128,7 @@ class OSD {
                     // x-www-form-urlencoded
                     $encoded_attributes = self::encode_attributes($attributes);
                     curl_setopt(self::$ch, CURLOPT_POSTFIELDS, $encoded_attributes);
+                    self::$headers['Authorization'] = 'Basic ' . base64_encode(self::$client_id . ":" . self::$client_secret);
                     self::$headers['Content-type'] = 'application/x-www-form-urlencoded';
                 }
                 //self::$headers['Content-type'] = 'application/json';
@@ -149,7 +150,7 @@ class OSD {
             $token = self::$oauth->access_token;
             self::$headers['Authorization'] = "OAuth oauth_token={$token}";
         } else {
-            unset(self::$headers['Authorization']);
+            // unset(self::$headers['Authorization']);
         }
 
         // File downloads can be of any type
@@ -168,7 +169,6 @@ class OSD {
         $response->status = curl_getinfo(self::$ch, CURLINFO_HTTP_CODE);
         $response->headers = self::parse_headers(substr($raw_response, 0, $raw_headers_size));
         self::$last_response = $response;
-
 
         switch ($response->status) {
             case 200 :
@@ -312,8 +312,8 @@ class OSDError extends Exception {
         $this->body = json_decode($body, TRUE);
         $this->status = $status;
         $this->url = $url;
-        //$this->request = $this->body['request'];
-        $this->request = $body['request'];
+        $this->request = $this->body['request'];
+        // $this->request = $body['request'];
     }
 
     public function __toString() {

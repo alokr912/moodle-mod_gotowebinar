@@ -13,7 +13,7 @@ function createGoToWebibnar($gotowebinar) {
     global $USER, $DB, $CFG;
     require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
-    OSD::setup(trim($config->consumer_key));
+    OSD::setup(trim($config->consumer_key), trim($config->consumer_secret));
     OSD::authenticate_with_password(trim($config->userid), trim($config->password));
     $attributes = array();
     $dstoffset = dst_offset_on($gotowebinar->startdatetime, get_user_timezone());
@@ -47,7 +47,7 @@ function updateGoToWebinar($oldgotowebinar, $gotowebinar) {
     global $USER, $DB, $CFG;
     require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
-    OSD::setup(trim($config->consumer_key));
+    OSD::setup(trim($config->consumer_key), trim($config->consumer_secret));
     OSD::authenticate_with_password(trim($config->userid), trim($config->password));
     $attributes = array();
     $dstoffset = dst_offset_on($gotowebinar->startdatetime, get_user_timezone());
@@ -76,7 +76,7 @@ function deleteGoToWebinar($gotoid) {
     global $USER, $DB, $CFG;
     require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
-    OSD::setup(trim($config->gotowebinar_consumer_key));
+    OSD::setup(trim($config->gotowebinar_consumer_key), trim($config->consumer_secret));
     OSD::authenticate_with_password(trim($config->gotowebinar_userid), trim($config->gotowebinar_password));
     $key = (int) OSD::$oauth->organizer_key;
     $responce = OSD::request('DELETE', "/G2W/rest/organizers/{$key}/webinars/{$gotoid}");
@@ -93,7 +93,7 @@ function get_gotowebinar($gotowebinar) {
     require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
     $context = context_course::instance($gotowebinar->course);
-    OSD::setup(trim($config->consumer_key));
+    OSD::setup(trim($config->consumer_key), trim($config->consumer_secret));
     OSD::authenticate_with_password(trim($config->userid), trim($config->password));
     $organiser_key = OSD::$oauth->organizer_key;
     if (is_siteadmin() OR has_capability('mod/gotowebinar:organiser', $context) OR has_capability('mod/gotowebinar:presenter', $context)) {
@@ -167,7 +167,7 @@ function get_gotowebinarinfo($gotowebinar) {
     require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
     $config = get_config('gotowebinar');
     $context = context_course::instance($gotowebinar->course);
-    OSD::setup(trim($config->gotowebinar_consumer_key));
+    OSD::setup(trim($config->gotowebinar_consumer_key), trim($config->consumer_secret));
     OSD::authenticate_with_password(trim($config->gotowebinar_userid), trim($config->gotowebinar_password));
     $organiser_key = OSD::$oauth->organizer_key;
 }
