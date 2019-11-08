@@ -23,7 +23,6 @@ if ($id) {
 }
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 $meeturl = '';
-$gototrainingdownloads = array();
 $gotomeeting = get_gotowebinar($gotowebinar);
 $meeturl = $gotomeeting;
 
@@ -42,72 +41,14 @@ $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('course') . ':  ' . $course->fullname);
-$table = new html_table();
-$table->head = array(get_string('pluginname', 'mod_gotowebinar'));
-$table->headspan = array(2);
-$table->size = array('30%', '70%');
 
-$cell1 = new html_table_cell(get_string('meetingtitle', 'mod_gotowebinar'));
-$cell1->colspan = 1;
-$cell1->style = 'text-align:left;';
-
-$cell2 = new html_table_cell("<b>" . $gotowebinar->name . "</b>");
-$cell2->colspan = 1;
-$cell2->style = 'text-align:left;';
-$table->data[] = array($cell1, $cell2);
-
-$cell1 = new html_table_cell(get_string('meetingdescription', 'mod_gotowebinar'));
-$cell1->colspan = 1;
-$cell1->style = 'text-align:left;';
-
-$cell2 = new html_table_cell("<b>" . strip_tags($gotowebinar->intro) . "</b>");
-$cell2->colspan = 1;
-$cell2->style = 'text-align:left;';
-
-$table->data[] = array($cell1, $cell2);
-
-
-$cell1 = new html_table_cell(get_string('meetingstartenddate', 'mod_gotowebinar'));
-$cell1->colspan = 1;
-$cell1->style = 'text-align:left;';
-
-$cell2 = new html_table_cell("<b>" . userdate($gotowebinar->startdatetime) . "</b>");
-$cell2->colspan = 1;
-$cell2->style = 'text-align:left;';
-
-$table->data[] = array($cell1, $cell2);
-
-
-$cell1 = new html_table_cell(get_string('meetingenddateandtime', 'mod_gotowebinar'));
-$cell1->colspan = 1;
-$cell1->style = 'text-align:left;';
-
-$cell2 = new html_table_cell("<b>" . userdate($gotowebinar->enddatetime) . "</b>");
-$cell2->colspan = 1;
-$cell2->style = 'text-align:left;';
-
-$table->data[] = array($cell1, $cell2);
-
-$cell2 = new html_table_cell(html_writer::link(trim($meeturl, '"'), get_string('joinmeeting', 'mod_gotowebinar'),
-    array("target" => "_blank", 'class' => 'btn btn-primary')));
-$cell2->colspan = 2;
-$cell2->style = 'text-align:center;';
-
-$table->data[] = array($cell2);
-
-foreach ($gototrainingdownloads as $gototrainingdownload) {
-    $cell1 = new html_table_cell(get_string('meetingrecording', 'mod_gotowebinar'));
-    $cell1->colspan = 1;
-    $cell1->style = 'text-align:left;';
-    $downloadlink = html_writer::link($gototrainingdownload->downloadUrl, get_string('downloadurl', 'mod_gotowebinar') . ' ');
-    $cell2 = new html_table_cell("<b>$downloadlink</b>");
-    $cell2->colspan = 1;
-    $cell2->style = 'text-align:left;';
-    $table->data[] = array($cell1, $cell2);
-}
-
-
-echo html_writer::table($table);
-
+$renderer = $PAGE->get_renderer('mod_gotowebinar');
+$obj = new stdClass();
+$obj->meetingtitle = $gotowebinar->name;
+$obj->meetingdescription = strip_tags($gotowebinar->intro);
+$obj->meetingstartenddate = userdate($gotowebinar->startdatetime);
+$obj->meetingenddateandtime = userdate($gotowebinar->enddatetime);
+$obj->joinmeeting = $meeturl;
+echo $renderer->render_from_template('mod_gotowebinar/start_view', $obj);
 
 echo $OUTPUT->footer();
