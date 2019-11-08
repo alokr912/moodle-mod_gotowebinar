@@ -2,7 +2,7 @@
 
 
 /**
- * GoToWebinar module  library file 
+ * GoToWebinar module  library file
  *
  * @package mod_gotowebinar
  * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
@@ -16,19 +16,19 @@ function gotowebinar_add_instance($data, $mform = null) {
     global $USER, $DB;
 
     $response = createGoToWebibnar($data);
-   
+
     if ($response && $response->status == 201) {
         $data->userid = $USER->id;
         $data->timecreated = time();
         $data->timemodified = time();
         $data->meetinfo = trim($response->body, '"');
         $jsonresponse = json_decode($response->body);
-        $data->webinarkey = $jsonresponse->webinarKey;    
+        $data->webinarkey = $jsonresponse->webinarKey;
 
 
         $data->id = $DB->insert_record('gotowebinar', $data);
     }
-   
+
     if (!empty($data->id)) {
         // Add event to calendar
         $event = new stdClass();
@@ -44,22 +44,19 @@ function gotowebinar_add_instance($data, $mform = null) {
         $event->visible = 1;
         $event->modulename = 'gotowebinar';
         calendar_event::create($event);
-        
+
         $event = \mod_gotowebinar\event\gotowebinar_created::create(array(
-                'objectid' => $data->id,
-                'context' => context_module::instance($data->coursemodule),
-                'other' => array('modulename' => $data->name, 'startdatetime' => $data->startdatetime),
-    ));
-    $event->trigger();
-     return $data->id;
-    }else {
+            'objectid' => $data->id,
+            'context' => context_module::instance($data->coursemodule),
+            'other' => array('modulename' => $data->name, 'startdatetime' => $data->startdatetime),
+        ));
+        $event->trigger();
+        return $data->id;
+    } else {
         return FALSE;
     }
 
 
-    
-
-   
 }
 
 /**
@@ -75,16 +72,26 @@ function gotowebinar_add_instance($data, $mform = null) {
  */
 function gotowebinar_supports($feature) {
     switch ($feature) {
-        case FEATURE_GROUPS: return false;
-        case FEATURE_GROUPINGS: return false;
-        case FEATURE_GROUPMEMBERSONLY: return false;
-        case FEATURE_MOD_INTRO: return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
-        case FEATURE_GRADE_HAS_GRADE: return false;
-        case FEATURE_GRADE_OUTCOMES: return false;
-        case FEATURE_BACKUP_MOODLE2: return true;
-        case FEATURE_COMPLETION_HAS_RULES: return false;
-        default: return null;
+        case FEATURE_GROUPS:
+            return false;
+        case FEATURE_GROUPINGS:
+            return false;
+        case FEATURE_GROUPMEMBERSONLY:
+            return false;
+        case FEATURE_MOD_INTRO:
+            return true;
+        case FEATURE_COMPLETION_TRACKS_VIEWS:
+            return true;
+        case FEATURE_GRADE_HAS_GRADE:
+            return false;
+        case FEATURE_GRADE_OUTCOMES:
+            return false;
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
+        case FEATURE_COMPLETION_HAS_RULES:
+            return false;
+        default:
+            return null;
     }
 }
 
@@ -97,19 +104,12 @@ function gotowebinar_supports($feature) {
  * @return boolean Success/Failure
  */
 function gotowebinar_update_instance($gotowebinar) {
-
     global $DB;
-    if (!$oldgotowebinar = $DB->get_record('gotowebinar', array('id' => $gotowebinar->instance))) {
+    if (!($oldgotowebinar = $DB->get_record('gotowebinar', array('id' => $gotowebinar->instance)))) {
         return false;
     }
-    $result = false;
-    if ($oldgotowebinar->meetingtype == 'gotomeeting' && $gotowebinar->meetingtype == 'gotomeeting') {
-        $result = updateGoToMeeting($oldgotowebinar, $gotowebinar);
-    } else if ($oldgotowebinar->meetingtype == 'gotowebinar' && $gotowebinar->meetingtype == 'gotowebinar') {
-        $result = updateGoToWebinar($oldgotowebinar, $gotowebinar);
-    } else if ($oldgotowebinar->meetingtype == 'gototraining' && $gotowebinar->meetingtype == 'gototraining') {
-        $result = updateGoToTraining($oldgotowebinar, $gotowebinar);
-    }
+    $result = updateGoToWebinar($oldgotowebinar, $gotowebinar);
+    // $oldgotowebinar->meetingtype is always empty, set it up like this or add an invisible option to the mod_form
     if ($result) {
 
         $oldgotowebinar->name = $gotowebinar->name;
@@ -143,9 +143,9 @@ function gotowebinar_update_instance($gotowebinar) {
         }
     }
     $event = \mod_gotowebinar\event\gotowebinar_updated::create(array(
-                'objectid' => $gotowebinar->instance,
-                'context' => context_module::instance($gotowebinar->coursemodule),
-                'other' => array('modulename' => $gotowebinar->name, 'startdatetime' => $gotowebinar->startdatetime),
+        'objectid' => $gotowebinar->instance,
+        'context' => context_module::instance($gotowebinar->coursemodule),
+        'other' => array('modulename' => $gotowebinar->name, 'startdatetime' => $gotowebinar->startdatetime),
     ));
     $event->trigger();
     return $result;
@@ -182,7 +182,7 @@ function gotowebinar_delete_instance($id) {
             $result = $DB->delete_records('gotowebinar', $params);
         }
     } else if ($gotowebinar->meetingtype == 'gototraining') {
-        if (deleteGoToTraining((int) $gotowebinar->gotoid)) {
+        if (deleteGoToTraining((int)$gotowebinar->gotoid)) {
             $params = array('id' => $gotowebinar->id);
             $result = $DB->delete_records('gotowebinar', $params);
         }
@@ -198,23 +198,22 @@ function gotowebinar_delete_instance($id) {
     }
 
     $event = \mod_gotowebinar\event\gotowebinar_deleted::create(array(
-                'objectid' => $id,
-                'context' => $context,
-                'other' => array('modulename' => $gotowebinar->name, 'startdatetime' => $gotowebinar->startdatetime),
+        'objectid' => $id,
+        'context' => $context,
+        'other' => array('modulename' => $gotowebinar->name, 'startdatetime' => $gotowebinar->startdatetime),
     ));
 
 
     $event->trigger();
 
 
-
     return $result;
 }
 
 /*
- * 
- * 
- * 
+ *
+ *
+ *
  */
 
 function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
@@ -222,7 +221,7 @@ function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
     $result = $type;
     if (!($gotowebinar = $DB->get_record('gotowebinar', array('id' => $cm->instance)))) {
         throw new Exception("Can't find GoToLMS {$cm->instance}");
-    } // as of now it is not implemented will implement it soon 
+    } // as of now it is not implemented will implement it soon
     /* if ($gotowebinar->completionparticipation && $gotowebinar->completionparticipation > 0 && $gotowebinar->completionparticipation <= 100) {
       if ($gotowebinar->meetingtype == 'gotowebinar') {
       $config = get_config('gotowebinar');

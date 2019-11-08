@@ -11,7 +11,6 @@ namespace mod_gotowebinar\event;
 defined('MOODLE_INTERNAL') || die();
 
 
-
 class gotowebinar_updated extends \core\event\base {
     /**
      * Init method
@@ -48,7 +47,7 @@ class gotowebinar_updated extends \core\event\base {
      */
     public function get_url() {
         return new \moodle_url("/course/modedit.php",
-                array('update' => $this->contextinstanceid));
+            array('update' => $this->contextinstanceid));
     }
 
     /**
@@ -59,7 +58,7 @@ class gotowebinar_updated extends \core\event\base {
     public function get_legacy_logdata() {
         return array();
     }
-  
+
     /**
      * Custom validation.
      *

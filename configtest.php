@@ -15,7 +15,7 @@ $PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotolms/configtest.php'));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading('a');
 $PAGE->set_title('GoToLMS config test report');
-// require_login();      
+// require_login();
 echo $OUTPUT->header();
 if (!is_siteadmin()) {
     print_error('nopermissions', 'gotolms', '', null);
@@ -24,8 +24,6 @@ if (!is_siteadmin()) {
 echo $OUTPUT->heading('GoToLMS config test report');
 
 $gotolmsconfig = get_config('gotowebinar');
-
-
 
 
 echo html_writer::div('GoToWebinar config validation ', 'alert alert-info');
@@ -50,11 +48,11 @@ if (isset($gotolmsconfig->password) && $gotolmsconfig->password == '') {
     echo html_writer::div('GoToWebinar password missing', 'alert alert-danger');
 }
 if ($validconsumerkey && $validuserid && $validpassword) {
-    OSD::setup(trim($gotolmsconfig->consumer_key),trim($gotolmsconfig->consumer_secret));
+    OSD::setup(trim($gotolmsconfig->consumer_key), trim($gotolmsconfig->consumer_secret));
     if (OSD::authenticate_with_password(trim($gotolmsconfig->userid), trim($gotolmsconfig->password))) {
         $auth = OSD::$oauth;
         $content = 'Authentication successfull with '
-                . '  organizer_key:  ' . $auth->organizer_key;
+            . '  organizer_key:  ' . $auth->organizer_key;
         echo html_writer::div($content, 'alert alert-success');
     } else {
         echo html_writer::div(OSD::$last_response->body, 'alert alert-danger');

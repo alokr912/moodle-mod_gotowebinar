@@ -6,6 +6,7 @@
  * @copyright  2017 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_gotowebinar\event;
 defined('MOODLE_INTERNAL') || die();
 
@@ -46,7 +47,7 @@ class gotowebinar_deleted extends \core\event\base {
      */
     public function get_url() {
         return new \moodle_url("/mod/glossary/editcategories.php",
-                array('id' => $this->contextinstanceid));
+            array('id' => $this->contextinstanceid));
     }
 
     /**
