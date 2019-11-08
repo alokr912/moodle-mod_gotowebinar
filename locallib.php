@@ -146,7 +146,7 @@ function get_gotowebinar($gotowebinar) {
             $gotowebinar_registrant->joinurl = $registrstioninfo->joinUrl;
             $gotowebinar_registrant->registrantkey = $registrstioninfo->registrantKey;
             $gotowebinar_registrant->userid = $USER->id;
-            $gotowebinar_registrant->gotoid = $gotowebinar->webinarkey;
+            $gotowebinar_registrant->gotowebinarid = $gotowebinar->webinarkey;
             $gotowebinar_registrant->timecreated = time();
             $gotowebinar_registrant->timemodified = time();
             $gotowebinar_registrant->id = $DB->insert_record('gotowebinar_registrant', $gotowebinar_registrant);
