@@ -2,13 +2,13 @@
 
 
 /**
- * Strings for component 'GoToWebinar', language 'en', 
+ * Strings for component 'GoToWebinar', language 'en',
  *
  * @package mod_gotowebinar
  * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname']= 'GoToWebinar';
+$string['pluginname'] = 'GoToWebinar';
 $string['modulename'] = 'GoToWebinar';
 $string['modulenameplural'] = 'GoToWebinar';
 $string['gotowebinarheading'] = 'GoToWebinar Settings';
@@ -32,7 +32,7 @@ $string['meetingnamerequired'] = 'Meeting name is required';
 $string['gotolmsintro'] = 'Description';
 $string['meetingtitle'] = 'Title';
 $string['meetingheader'] = 'GoToWebinar  setting';
-$string['gotowebinarintro'] ='Description';
+$string['gotowebinarintro'] = 'Description';
 $string['meetingheader'] = 'GoToWebinar setting';
 $string['gotowebinarintrorequired'] = '';
 $string['pluginadministration'] = '';

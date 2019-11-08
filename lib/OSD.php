@@ -178,7 +178,7 @@ class OSD {
                 return $response;
                 break;
             case 400 :
-                // die; 
+                // die;
                 // invalid_grant_error or bad_request_error
                 $body = $response->json_body();
                 if (strstr($body['error'], 'invalid_grant')) {
@@ -208,12 +208,14 @@ class OSD {
                         throw new OSDError($response->body, $response->status, $url);
                     }
                 } elseif (strstr($body['error'], 'invalid_request')) {
-                    // print_object($body);   
+                    // print_object($body);
                     // Access token is invalid.
                     self::$oauth = new OSDOAuth();
                     throw new OSDError($response->body, $response->status, $url);
                 }
                 break;
+            case 409 :
+                return $response;
             default :
 
                 // throw new OSDError($response->body, $response->status, $url);

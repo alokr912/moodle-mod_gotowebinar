@@ -14,14 +14,14 @@ class restore_gotowebinar_activity_structure_step extends restore_activity_struc
 
         $paths = array();
         $userinfo = false;
-//        $userinfo = $this->get_setting_value('userinfo');
+        //        $userinfo = $this->get_setting_value('userinfo');
 
         $paths[] = new restore_path_element('gotowebinar', '/activity/gotowebinar');
-       // $paths[] = new restore_path_element('gotowebinar_meeting_group', '/activity/gotowebinar/meeting_groups/meeting_group');
-//        if ($userinfo) {
-//            $paths[] = new restore_path_element('survey_answer', '/activity/survey/answers/answer');
-//            $paths[] = new restore_path_element('survey_analys', '/activity/survey/analysis/analys');
-//        }
+        // $paths[] = new restore_path_element('gotowebinar_meeting_group', '/activity/gotowebinar/meeting_groups/meeting_group');
+        //        if ($userinfo) {
+        //            $paths[] = new restore_path_element('survey_answer', '/activity/survey/answers/answer');
+        //            $paths[] = new restore_path_element('survey_analys', '/activity/survey/analysis/analys');
+        //        }
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
@@ -46,8 +46,8 @@ class restore_gotowebinar_activity_structure_step extends restore_activity_struc
         global $DB;
 
         $data = (object)$data;
-        $data->instanceid   = $this->get_new_parentid('gotowebinar');
-        $data->groupid      = $this->get_mappingid('instanceid', $data->instanceid);
+        $data->instanceid = $this->get_new_parentid('gotowebinar');
+        $data->groupid = $this->get_mappingid('instanceid', $data->instanceid);
 
         $newitemid = $DB->insert_record('gotowebinar_registrant', $data);
 
@@ -57,6 +57,6 @@ class restore_gotowebinar_activity_structure_step extends restore_activity_struc
 
     protected function after_execute() {
         // Add survey related files, no need to match by itemname (just internally handled context)
-       // $this->add_related_files('mod_gotowebinar', 'intro', null);
+        // $this->add_related_files('mod_gotowebinar', 'intro', null);
     }
 }
