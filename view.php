@@ -10,7 +10,7 @@
  */
 require('../../config.php');
 require_once($CFG->dirroot . '/mod/gotowebinar/locallib.php');
-require_once($CFG->dirroot . '/mod/gotowebinar/lib/OSD.php');
+require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
 require_once($CFG->libdir . '/completionlib.php');
 global $DB, $USER;
 $id = required_param('id', PARAM_INT); // Course Module ID
@@ -24,8 +24,10 @@ if ($id) {
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 $meeturl = '';
 $gototrainingdownloads = array();
-$gotomeeting = get_gotowebinar($gotowebinar);
-$meeturl = $gotomeeting;
+$meeturl = get_gotowebinar($gotowebinar);
+
+
+
 
 $meetinginfo = json_decode($gotowebinar->meetinfo);
 require_course_login($course, true, $cm);

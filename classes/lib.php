@@ -9,7 +9,6 @@
  */
 defined('MOODLE_INTERNAL') || die;
 require_once $CFG->dirroot . '/calendar/lib.php';
-require_once ('locallib.php');
 
 function gotowebinar_add_instance($data, $mform = null) {
 

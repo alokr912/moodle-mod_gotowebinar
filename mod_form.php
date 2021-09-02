@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * GoToWebinar module form
  *
@@ -30,8 +29,8 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         $this->standard_intro_elements();
 
         $mform->addElement('header', 'meetingheader', get_string('meetingheader', 'gotowebinar'));
-
-
+  
+          
         $mform->addElement('date_time_selector', 'startdatetime', get_string('startdatetime', 'gotowebinar'));
         $mform->setDefault('startdatetime', time() + 300);
         $mform->addRule('startdatetime', 'Occurs required', 'required', 'client');
@@ -41,6 +40,12 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         $mform->setDefault('enddatetime', time() + 3900);
         $mform->addRule('enddatetime', 'Occurs required', 'required', 'client');
 
+        $mform->addElement('selectyesno', 'confimertionemail', get_string('maxattachmentsize', 'forum'));
+        $mform->addElement('selectyesno', 'reminderemail', get_string('maxattachmentsize', 'forum'));
+        $mform->addElement('selectyesno', 'absenteefollowupemail', get_string('maxattachmentsize', 'forum'));
+        $mform->addElement('selectyesno', 'attendeefollowupemail', get_string('maxattachmentsize', 'forum'));
+        $mform->addElement('selectyesno', 'sendcancellationemails', get_string('maxattachmentsize', 'forum'));
+       
         // Adding hidden items
         $mform->addElement('hidden', 'meetingpublic', 1);
         $mform->setType('meetingpublic', PARAM_INT);
@@ -63,18 +68,17 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
     function add_completion_rules() {
         $mform = &$this->_form;
 
-        /* $group = array();
-         $group[] = & $mform->createElement('checkbox', 'completionparticipationenabled', '', get_string('completiongotowebinar', 'mod_gotowebinar'));
-         $group[] = & $mform->createElement('text', 'completionparticipation', '', array('size' => 3, 'value' => 50));
-         $mform->setType('completionparticipation', PARAM_INT);
-         $mform->addGroup($group, 'completiongotowebinargroup', get_string('completiongotowebinargroup', 'mod_gotowebinar'), array(' '), false);
-         $mform->addHelpButton('completiongotowebinargroup', 'completiongotowebinargroup', 'gotowebinar');
-         $mform->disabledIf('completionparticipationenabled', 'meetingtype', 'eq', 'gotomeeting');
-         $mform->disabledIf('completionparticipation', 'meetingtype', 'eq', 'gotomeeting');
-         $mform->disabledIf('completionparticipation', 'completionparticipationenabled', 'notchecked');
+        $group = array();
+        $group[] = & $mform->createElement('checkbox', 'completionparticipationenabled', '', get_string('completiongotowebinar', 'gotowebinar'));
+        $group[] = & $mform->createElement('text', 'completionparticipation', '', array('size' => 3, 'value' => 50));
+        $mform->setType('completionparticipation', PARAM_INT);
+        $mform->addGroup($group, 'completiongotowebinargroup', get_string('completiongotowebinargroup', 'gotowebinar'), array(' '), false);
+        $mform->addHelpButton('completiongotowebinargroup', 'completiongotowebinargroup', 'gotowebinar');
+        //$mform->disabledIf('completionparticipationenabled', 'meetingtype', 'eq', 'gotomeeting');
+        // $mform->disabledIf('completionparticipation', 'meetingtype', 'eq', 'gotomeeting');
+        // $mform->disabledIf('completionparticipation', 'completionparticipationenabled', 'notchecked');
 
-         return array('completiongotowebinargroup');*/
-        return array();
+        return array('completiongotowebinargroup');
     }
 
     function completion_rule_enabled($data) {
@@ -118,7 +122,6 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
             if ($autocompletion && ($data['completionparticipation'] > 100 || $data['completionparticipation'] <= 0)) {
                 $errors['completiongotowebinargroup'] = 'Please enter a valid percentage value between 1 and 100';
             }
-
         }
         return $errors;
     }

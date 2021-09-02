@@ -13,9 +13,9 @@ $string['modulename'] = 'GoToWebinar';
 $string['modulenameplural'] = 'GoToWebinar';
 $string['gotowebinarheading'] = 'GoToWebinar Settings';
 $string['gtw_consumer_key'] = 'GoToWebinar Consumer key';
-$string['gtw_consumer_key_desc'] = 'Enter the GoToWebinar Consumer key, which is generated when you create App at https://goto-developer.logmeininc.com/user/me/apps. ';
+$string['gtw_consumer_key_desc'] = 'Enter the GoToWebinar Consumer key, which is generated when you create App at https://developer.logmeininc.com/clients# ';
 $string['gtw_consumer_secret'] = 'GoToWebinar Consumer Secret';
-$string['gtw_consumer_secret_desc'] = 'Enter the GoToWebinar Consumer Secret, which is generated when you create App at https://goto-developer.logmeininc.com/user/me/apps.';
+$string['gtw_consumer_secret_desc'] = 'Enter the GoToWebinar Consumer Secret, which is generated when you create App at https://developer.logmeininc.com/clients#';
 $string['gtw_userid'] = 'GoToWebinar Userid';
 $string['gtw_userid_desc'] = 'Enter your GoToWebinar Userid';
 $string['gtw_password'] = 'GoToWebinar password';
@@ -43,3 +43,10 @@ $string['meetingenddateandtime'] = 'Meeting end date and time';
 $string['joinmeeting'] = 'Join Meeting';
 $string['meetingrecording'] = 'Meeting Recording';
 $string['downloadurl'] = 'Download Link';
+$string['setup']='Setup GoToWebinar';
+$string['completiongotowebinargroup']='Require to attend ';
+$string['completiongotowebinargroup_help']='Require to attend GoToWebinar';
+$string['completiongotowebinar']='Student must attent this activity minimum percentage to complete it ';
+
+//$string['completiongotowebinar']='Setup GoToWebinar';
+

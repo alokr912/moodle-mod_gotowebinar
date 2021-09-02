@@ -8,14 +8,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once('../../config.php');
-require_once $CFG->dirroot . '/mod/gotowebinar/lib/OSD.php';
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotolms/configtest.php'));
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading('a');
+$PAGE->set_heading('GoToLMS config test');
 $PAGE->set_title('GoToLMS config test report');
-// require_login();
+ require_login();
 echo $OUTPUT->header();
 if (!is_siteadmin()) {
     print_error('nopermissions', 'gotolms', '', null);
