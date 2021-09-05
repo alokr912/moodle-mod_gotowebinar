@@ -40,11 +40,11 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         $mform->setDefault('enddatetime', time() + 3900);
         $mform->addRule('enddatetime', 'Occurs required', 'required', 'client');
 
-        $mform->addElement('selectyesno', 'confimertionemail', get_string('maxattachmentsize', 'forum'));
-        $mform->addElement('selectyesno', 'reminderemail', get_string('maxattachmentsize', 'forum'));
-        $mform->addElement('selectyesno', 'absenteefollowupemail', get_string('maxattachmentsize', 'forum'));
-        $mform->addElement('selectyesno', 'attendeefollowupemail', get_string('maxattachmentsize', 'forum'));
-        $mform->addElement('selectyesno', 'sendcancellationemails', get_string('maxattachmentsize', 'forum'));
+        $mform->addElement('selectyesno', 'confirmationemail', get_string('confirmationemail', 'gotowebinar'));
+        $mform->addElement('selectyesno', 'reminderemail', get_string('reminderemail', 'gotowebinar'));
+        $mform->addElement('selectyesno', 'absenteefollowupemail', get_string('absenteefollowupemail', 'gotowebinar'));
+        $mform->addElement('selectyesno', 'attendeefollowupemail', get_string('attendeefollowupemail', 'gotowebinar'));
+        $mform->addElement('selectyesno', 'sendcancellationemails', get_string('sendcancellationemails', 'gotowebinar'));
        
         // Adding hidden items
         $mform->addElement('hidden', 'meetingpublic', 1);

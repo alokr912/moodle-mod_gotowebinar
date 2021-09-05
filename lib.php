@@ -11,12 +11,23 @@ defined('MOODLE_INTERNAL') || die;
 require_once $CFG->dirroot . '/calendar/lib.php';
 require_once ('locallib.php');
 
+function gotowebinar_get_coursemodule_info($coursemodule) {
+    global $DB;
+
+    if ($gotowebinar = $DB->get_record('gotowebinar', array('id' => $coursemodule->instance), 'id, name, startdatetime')) {
+        $info = new cached_cm_info();
+        $info->name = $gotowebinar->name . "  " . userdate($gotowebinar->startdatetime, '%d/%m/%Y %H:%M');
+        return $info;
+    } else {
+        return null;
+    }
+}
+
 function gotowebinar_add_instance($data, $mform = null) {
 
     global $USER, $DB;
 
     $response = createGoToWebibnar($data);
-
 
     if ($response) {
         $data->userid = $USER->id;
@@ -24,7 +35,6 @@ function gotowebinar_add_instance($data, $mform = null) {
         $data->timemodified = time();
 
         $data->webinarkey = $response;
-
 
         $data->id = $DB->insert_record('gotowebinar', $data);
     }
@@ -51,7 +61,7 @@ function gotowebinar_add_instance($data, $mform = null) {
                     'other' => array('modulename' => $data->name, 'startdatetime' => $data->startdatetime),
         ));
         $event->trigger();
-      
+
         return $data->id;
     }
     return FALSE;
@@ -103,7 +113,7 @@ function gotowebinar_supports($feature) {
  */
 function gotowebinar_update_instance($gotowebinar) {
     global $DB;
-  
+
     if (!($oldgotowebinar = $DB->get_record('gotowebinar', array('id' => $gotowebinar->instance)))) {
         return false;
     }
@@ -116,6 +126,12 @@ function gotowebinar_update_instance($gotowebinar) {
         $oldgotowebinar->startdatetime = $gotowebinar->startdatetime;
         $oldgotowebinar->enddatetime = $gotowebinar->enddatetime;
         $oldgotowebinar->timemodified = time();
+        $oldgotowebinar->confirmationemail = $gotowebinar->confirmationemail;
+        $oldgotowebinar->reminderemail = $gotowebinar->reminderemail;
+        $oldgotowebinar->absenteefollowupemail = $gotowebinar->absenteefollowupemail;
+        $oldgotowebinar->absenteefollowupemail = $gotowebinar->absenteefollowupemail;
+        $oldgotowebinar->sendcancellationemails = $gotowebinar->sendcancellationemails;
+
         $DB->update_record('gotowebinar', $oldgotowebinar);
         $param = array('courseid' => $gotowebinar->course, 'instance' => $gotowebinar->instance,
             'groupid' => 0, 'modulename' => 'gotowebinar');
@@ -171,7 +187,7 @@ function gotowebinar_delete_instance($id) {
     }
     $context = context_module::instance($cm->id);
     deleteGoToWebinar($gotowebinar->webinarkey);
-   
+
     // Delete calendar  event
     $param = array('courseid' => $gotowebinar->course, 'instance' => $gotowebinar->id,
         'groupid' => 0, 'modulename' => 'gotowebinar');
@@ -188,9 +204,7 @@ function gotowebinar_delete_instance($id) {
                 'other' => array('modulename' => $gotowebinar->name, 'startdatetime' => $gotowebinar->startdatetime),
     ));
 
-
     $event->trigger();
-
 
     return $result;
 }
@@ -207,17 +221,17 @@ function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
     if (!($gotowebinar = $DB->get_record('gotowebinar', array('id' => $cm->instance)))) {
         throw new Exception("Can't find GoToLMS {$cm->instance}");
     } // as of now it is not implemented will implement it soon
-     if ($gotowebinar->completionparticipation && $gotowebinar->completionparticipation > 0 && $gotowebinar->completionparticipation <= 100) {
-      if ($gotowebinar->meetingtype == 'gotowebinar') {
-      $config = get_config('gotowebinar');
-      OSD::setup(trim($config->gotowebinar_consumer_key));
-      OSD::authenticate_with_password(trim($config->gotowebinar_userid), trim($config->gotowebinar_password));
-      } else if ($gotowebinar->meetingtype == 'gototraining') {
-      $config = get_config('gotowebinar');
-      OSD::setup(trim($config->gototraining_consumer_key));
-      OSD::authenticate_with_password(trim($config->gototraining_userid), trim($config->gototraining_password));
-      }
-      } 
-     // https://api.getgo.com/G2W/rest/v2/organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/attendees
+    if ($gotowebinar->completionparticipation && $gotowebinar->completionparticipation > 0 && $gotowebinar->completionparticipation <= 100) {
+        if ($gotowebinar->meetingtype == 'gotowebinar') {
+            $config = get_config('gotowebinar');
+            OSD::setup(trim($config->gotowebinar_consumer_key));
+            OSD::authenticate_with_password(trim($config->gotowebinar_userid), trim($config->gotowebinar_password));
+        } else if ($gotowebinar->meetingtype == 'gototraining') {
+            $config = get_config('gotowebinar');
+            OSD::setup(trim($config->gototraining_consumer_key));
+            OSD::authenticate_with_password(trim($config->gototraining_userid), trim($config->gototraining_password));
+        }
+    }
+    // https://api.getgo.com/G2W/rest/v2/organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/attendees
     return false;
 }

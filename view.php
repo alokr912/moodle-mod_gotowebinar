@@ -26,14 +26,22 @@ $meeturl = '';
 $gototrainingdownloads = array();
 $meeturl = get_gotowebinar($gotowebinar);
 
-
-
+$audio_info = get_gotowebinar_audio_info($gotowebinar->webinarkey);
 
 $meetinginfo = json_decode($gotowebinar->meetinfo);
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/gotowebinar:view', $context);
 
+$access_code = '';
+if(has_capability('mod/gotowebinar:organiser', $context)){
+    $access_code = $audio_info['organizer_accesscode'];
+}else if( has_capability('mod/gotowebinar:presenter', $context)){
+  $access_code = $audio_info['panelist_accesscode'];  
+}else {
+    
+  $access_code = $audio_info['attendee_accesscode'];     
+}
 
 $PAGE->set_url('/mod/gotowebinar/view.php', array('id' => $cm->id));
 $PAGE->set_title($course->shortname . ': ' . $gotowebinar->name);
@@ -85,6 +93,38 @@ $cell1->colspan = 1;
 $cell1->style = 'text-align:left;';
 
 $cell2 = new html_table_cell("<b>" . userdate($gotowebinar->enddatetime) . "</b>");
+$cell2->colspan = 1;
+$cell2->style = 'text-align:left;';
+
+$table->data[] = array($cell1, $cell2);
+
+
+$cell1 = new html_table_cell(get_string('webinarkey', 'mod_gotowebinar'));
+$cell1->colspan = 1;
+$cell1->style = 'text-align:left;';
+
+$cell2 = new html_table_cell("<b>" . $gotowebinar->webinarkey . "</b>");
+$cell2->colspan = 1;
+$cell2->style = 'text-align:left;';
+
+$table->data[] = array($cell1, $cell2);
+
+
+$cell1 = new html_table_cell(get_string('toll', 'mod_gotowebinar'));
+$cell1->colspan = 1;
+$cell1->style = 'text-align:left;';
+
+$cell2 = new html_table_cell("<b>" . $audio_info['toll'] . "</b>");
+$cell2->colspan = 1;
+$cell2->style = 'text-align:left;';
+
+$table->data[] = array($cell1, $cell2);
+
+$cell1 = new html_table_cell(get_string('accesscode', 'mod_gotowebinar'));
+$cell1->colspan = 1;
+$cell1->style = 'text-align:left;';
+
+$cell2 = new html_table_cell("<b>" . $access_code . "</b>");
 $cell2->colspan = 1;
 $cell2->style = 'text-align:left;';
 

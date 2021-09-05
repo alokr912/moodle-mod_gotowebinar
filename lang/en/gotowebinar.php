@@ -24,8 +24,8 @@ $string['gtw_enable'] = ' Enable GoToWebinar';
 $string['gtw_enable_desc'] = 'Click on checkbox to  enable GoToWebinar.';
 $string['testconnection'] = 'Test config and connection';
 $string['generalsetting'] = 'General setting';
-$string['startdatetime'] = 'Start Date & Time';
-$string['enddatetime'] = 'End Date & Time';
+$string['startdatetime'] = 'Start date & time';
+$string['enddatetime'] = 'End date & time';
 $string['meetingname'] = 'Name';
 $string['general'] = 'General';
 $string['meetingnamerequired'] = 'Meeting name is required';
@@ -48,5 +48,13 @@ $string['completiongotowebinargroup']='Require to attend ';
 $string['completiongotowebinargroup_help']='Require to attend GoToWebinar';
 $string['completiongotowebinar']='Student must attent this activity minimum percentage to complete it ';
 
-//$string['completiongotowebinar']='Setup GoToWebinar';
+$string['completiongotowebinar']='Setup GoToWebinar';
+$string['confirmationemail']= 'Send Confirmation email';
+$string['reminderemail']= 'Send reminder email';
+$string['absenteefollowupemail']= 'Send absentee follow-up email';
+$string['attendeefollowupemail']= 'Send attendee follow-up email';
+$string['sendcancellationemails']= 'Send cancellation email';
+$string['webinarkey'] = 'Webinar key/Id';
+$string['toll'] = 'Toll No';
+$string['accesscode'] = 'Access code';
 

@@ -28,6 +28,21 @@
                 <FIELD NAME="meetingpublic" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" DEFAULT="0"
                        SEQUENCE="false" COMMENT="Meetings can be public or non-public" PREVIOUS="completiongotowebinar"
                        NEXT="timecreated"/>
+                <FIELD NAME="confirmationemail" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" DEFAULT="0"
+                       SEQUENCE="false" COMMENT="Meetings can be public or non-public" PREVIOUS="meetingpublic"
+                       NEXT="reminderemail"/> 
+                <FIELD NAME="reminderemail" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" DEFAULT="0"
+                       SEQUENCE="false" COMMENT="Meetings can be public or non-public" PREVIOUS="confirmationemail"
+                       NEXT="absenteefollowupemail"/>
+                <FIELD NAME="absenteefollowupemail" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" DEFAULT="0"
+                       SEQUENCE="false" COMMENT="Meetings can be public or non-public" PREVIOUS="completiongotowebinar"
+                       NEXT="attendeefollowupemail"/>
+                <FIELD NAME="attendeefollowupemail" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" DEFAULT="0"
+                       SEQUENCE="false" COMMENT="Meetings can be public or non-public" PREVIOUS="absenteefollowupemail"
+                       NEXT="sendcancellationemails"/>
+                <FIELD NAME="sendcancellationemails" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" DEFAULT="0"
+                       SEQUENCE="false" COMMENT="Meetings can be public or non-public" PREVIOUS="attendeefollowupemail"
+                       NEXT="timecreated"/>
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
             </FIELDS>
