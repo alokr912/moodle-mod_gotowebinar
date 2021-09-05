@@ -255,3 +255,21 @@ function get_gotowebinar_audio_info($webinarkey) {
 
     return $response;
 }
+
+function sync_gotowebinar_completion_status() {
+    global $DB;
+    $start_time = time();
+    $enddatetime1= 
+   $enddatetime2 = time() - 15*60;
+    $filter = array('enddatetime1'=>$enddatetime1, 'enddatetime2'=>$enddatetime2);
+    $sql = "SELECT * FROM {gotowebinar}  enddatetime>=:enddatetime1 and enddatetime<=:enddatetime2 ";
+    $webinars = $DB->get_records_sql($sql,$filter);
+    foreach($webinars as $webinar){
+     get_gotowebinar_attendance();   
+    }
+    
+}
+
+function sync_gotowebinar_registration() {
+    
+}
