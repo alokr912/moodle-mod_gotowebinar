@@ -24,25 +24,19 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 
 $meeturl = '';
 $gototrainingdownloads = array();
+$gotowebinar_details = get_gotowebinarinfo($gotowebinar);
+
 $meeturl = get_gotowebinar($gotowebinar);
 
-$audio_info = get_gotowebinar_audio_info($gotowebinar->webinarkey);
+$audio_info = get_gotowebinar_audio_info($gotowebinar->webinarkey, $gotowebinar->gotowebinar_licence);
 
 $meetinginfo = json_decode($gotowebinar->meetinfo);
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/gotowebinar:view', $context);
 
-$access_code = '';
-if (has_capability('mod/gotowebinar:organiser', $context)) {
-    $access_code = $audio_info['organizer_accesscode'];
-} else if (has_capability('mod/gotowebinar:presenter', $context)) {
-    $access_code = $audio_info['panelist_accesscode'];
-} else {
 
-    $access_code = $audio_info['attendee_accesscode'];
-}
-
+ $access_code = $audio_info['attendee_accesscode'];
 $PAGE->set_url('/mod/gotowebinar/view.php', array('id' => $cm->id));
 $PAGE->set_title($course->shortname . ': ' . $gotowebinar->name);
 $PAGE->set_heading($course->fullname);
@@ -56,6 +50,20 @@ $table = new html_table();
 $table->head = array(get_string('pluginname', 'mod_gotowebinar'));
 $table->headspan = array(2);
 $table->size = array('30%', '70%');
+
+$cell1 = new html_table_cell(get_string('accountname', 'mod_gotowebinar'));
+$cell1->colspan = 1;
+$cell1->style = 'text-align:left;';
+
+$cell2 = new html_table_cell("<b>" . explode('@', $gotowebinar_details->organizerEmail)[0] . "</b>");
+$cell2->colspan = 1;
+$cell2->style = 'text-align:left;';
+
+if (has_capability('mod/gotowebinar:organiser', $context) OR has_capability('mod/gotowebinar:presenter', $context)) {
+    $table->data[] = array($cell1, $cell2);
+}
+
+
 
 $cell1 = new html_table_cell(get_string('meetingtitle', 'mod_gotowebinar'));
 $cell1->colspan = 1;
@@ -101,6 +109,16 @@ $cell1->colspan = 1;
 $cell1->style = 'text-align:left;';
 
 $cell2 = new html_table_cell("<b>" . $gotowebinar->webinarkey . "</b>");
+$cell2->colspan = 1;
+$cell2->style = 'text-align:left;';
+
+$table->data[] = array($cell1, $cell2);
+
+$cell1 = new html_table_cell(get_string('webinarid', 'mod_gotowebinar'));
+$cell1->colspan = 1;
+$cell1->style = 'text-align:left;';
+
+$cell2 = new html_table_cell("<b>" . $gotowebinar_details->webinarID . "</b>");
 $cell2->colspan = 1;
 $cell2->style = 'text-align:left;';
 

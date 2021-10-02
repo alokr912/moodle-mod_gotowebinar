@@ -35,6 +35,12 @@ if ($ADMIN->fulltree) {
     $visiblename = get_string('gtw_password', 'gotowebinar');
     $description = get_string('gtw_password_desc', 'gotowebinar');
     //$settings->add(new admin_setting_configpasswordunmask($name, $visiblename, $description, '', PARAM_RAW, 50));
+    
+     $licences  = $DB->get_records('gotowebinar_licence');
+    foreach($licences as $licence){
+        $settings->add(new admin_setting_description($licence->id,$licence->email,'Active'));
+        
+    }
     $goto = new \mod_gotowebinar\GoToOAuth();
     
     $status =$goto->getSetupStatus();

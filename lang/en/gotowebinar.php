@@ -36,8 +36,8 @@ $string['gotowebinarintro'] = 'Description';
 $string['meetingheader'] = 'GoToWebinar setting';
 $string['gotowebinarintrorequired'] = '';
 $string['pluginadministration'] = '';
-$string['meetingtitle'] = 'Meeting Title';
-$string['meetingdescription'] = 'Meeting Description';
+$string['meetingtitle'] = 'Meeting title';
+$string['meetingdescription'] = 'Meeting description';
 $string['meetingstartenddate'] = 'Meeting start date and time';
 $string['meetingenddateandtime'] = 'Meeting end date and time';
 $string['joinmeeting'] = 'Join Meeting';
@@ -54,7 +54,15 @@ $string['reminderemail']= 'Send reminder email';
 $string['absenteefollowupemail']= 'Send absentee follow-up email';
 $string['attendeefollowupemail']= 'Send attendee follow-up email';
 $string['sendcancellationemails']= 'Send cancellation email';
-$string['webinarkey'] = 'Webinar key/Id';
+$string['webinarkey'] = 'Webinar key';
 $string['toll'] = 'Toll No';
 $string['accesscode'] = 'Access code';
+$string['incompletesetup'] = 'GoTowebinar setup is incomplete, contact your site administrator to configure it.';
+$string['addlicence'] = 'Add new licence';
+$string['licence'] = 'Licence';
+$string['licencerequired']= 'GoWebinar Licence required.';
+$string['webinarid'] = 'Webinar ID';
+$string['accountname'] = 'Account name';
+$string['crontask'] = 'GoToWebinar Cron Task';
+
 

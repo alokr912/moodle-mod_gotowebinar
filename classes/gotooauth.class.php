@@ -6,7 +6,8 @@
  * and open the template in the editor.
  */
 namespace mod_gotowebinar;
-class GoToOAuth {
+
+class GotoOAuth {
 
     public const BASE_URL = "https://api.getgo.com";
     public const PLUGIN_NAME = "gotowebinar";
@@ -17,117 +18,99 @@ class GoToOAuth {
     public const ACCESS_TOKEN_TIME = "access_token_time";
     public const EXPIRY_TIME_IN_SECOND = 3500;
 
-    private $access_token;
-    private $refresh_token;
-    private $organizer_key;
-    private $account_key;
-    private $access_token_time;
-    private $consumer_key;
-    private $consumer_secret;
+    private $accesstoken;
+    private $refreshtoken;
+    public $organizerkey;
+    private $accountkey;
+    private $accesstokentime;
+    private $consumerkey;
+    private $consumersecret;
 
-    function __construct() {
+    public function __construct($licence_id = null) {
+        global $DB;
 
-        $config = get_config(self::PLUGIN_NAME);
-       
+        $licence = $DB->get_record('gotowebinar_licence', array('id' => $licence_id));
 
-        if (isset($config) && !empty($config->access_token)) {
-            $this->access_token = $config->access_token;
-        }
-        if (isset($config) && !empty($config->refresh_token)) {
-            $this->refresh_token = $config->refresh_token;
-        }
-        if (isset($config) && !empty($config->consumer_key)) {
-            $this->consumer_key = $config->consumer_key;
-        }
-        if (isset($config) && !empty($config->consumer_secret)) {
-            $this->consumer_secret = $config->consumer_secret;
-        }
-        if (isset($config) && !empty($config->access_token_time)) {
-            $this->access_token_time = $config->access_token_time;
-        }
-        if (isset($config) && !empty($config->account_key)) {
-            $this->account_key = $config->account_key;
-        }
-        if (isset($config) && !empty($config->organizer_key)) {
-            $this->organizer_key = $config->organizer_key;
+        if ($licence) {
+            $this->organizerkey = !empty($licence->organizer_key) ? $licence->organizer_key : null;
+            $this->refreshtoken = !empty($licence->refresh_token) ? $licence->refresh_token : null;
+            $this->accesstoken = !empty($licence->access_token) ? $licence->access_token : null;
+            $this->accesstokentime = !empty($licence->access_token_time) ? $licence->access_token_time : null;
         }
     }
 
-    public function getAccessTokenWithCode($code) {
-        global $CFG;
+    public function getaccesstokenwithcode($code) {
+        global $CFG, $DB;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::BASE_URL . "/oauth/v2/token");
         curl_setopt($ch, CURLOPT_POST, true);
-             
+        $pluginconfig = get_config(self::PLUGIN_NAME);
+        $authorization = base64_encode($pluginconfig->consumer_key . ":" . $pluginconfig->consumer_secret);
         $headers = [
-            'Authorization: Basic ' . base64_encode($this->consumer_key . ":" . $this->consumer_secret),
+            'Authorization: Basic ' . $authorization,
             'Accept:application/json',
             'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        // echo $authorization;
-        $redirect_url = $CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php';
-        $data = ['redirect_uri' => $redirect_url, 'grant_type' => 'authorization_code', 'code' => $code];
+        $redirecturl = $CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php';
+        $data = ['redirect_uri' => $redirecturl, 'grant_type' => 'authorization_code', 'code' => $code];
         curl_setopt($ch, CURLOPT_POSTFIELDS, self::encode_attributes($data));
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-       // curl_setopt($ch, CURLOPT_VERBOSE, true);
-        $server_output = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        $serveroutput = curl_exec($ch);
 
         curl_close($ch);
 
-        $response = json_decode($server_output);
-
-
-        if (isset($response) && isset($response->access_token) && isset($response->refresh_token) && isset($response->organizer_key) && isset($response->account_key)) {
-            $this->update_settings($response->access_token, $response->refresh_token,
-                    $response->organizer_key, $response->account_key);
-            return true;
-        } else {
-            return false;
-        }
+        $response = json_decode($serveroutput);
+        return $this->update_access_token($response);
     }
 
-    public function getAccessTokenWithRefreshToken($refreshToken) {
+    public function getaccesstokenwithrefreshtoken($refreshtoken) {
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::BASE_URL . "/oauth/v2/token");
         curl_setopt($ch, CURLOPT_POST, true);
+        $gotowebinarconfig = get_config(self::PLUGIN_NAME);
 
         $headers = [
-            'Authorization: Basic ' . base64_encode($this->consumer_key . ":" . $this->consumer_secret),
+            'Authorization: Basic ' . base64_encode($gotowebinarconfig->consumer_key . ":" . $gotowebinarconfig->consumer_secret),
             'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $data = ['grant_type' => 'refresh_token', 'refresh_token' => $refreshToken];
+        $data = ['grant_type' => 'refresh_token', 'refresh_token' => $refreshtoken];
         curl_setopt($ch, CURLOPT_POSTFIELDS, self::encode_attributes($data));
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-
-        $server_output = curl_exec($ch);
+        $serveroutput = curl_exec($ch);
         curl_close($ch);
 
-        $response = json_decode($server_output);
+        $response = json_decode($serveroutput);
 
-        if (isset($response) && isset($response->access_token) && isset($response->refresh_token) && isset($response->organizer_key) && isset($response->account_key)) {
-            $this->update_settings($response->access_token, $response->refresh_token,
-                    $response->organizer_key, $response->account_key);
+        if (isset($response) && isset($response->access_token) && isset($response->refresh_token) &&
+                isset($response->organizer_key) && isset($response->account_key)) {
+            $this->update_access_token($response);
+            $this->accesstoken = $response->access_token;
+            $this->refreshtoken = $response->refresh_token;
+
+            $this->accesstokentime = time();
 
             return $response->access_token;
         }
         return false;
     }
 
-    function getAccessToken() {
-        $gotowebinarconfig = get_config(self::PLUGIN_NAME);
-        if (isset($gotowebinarconfig->access_token_time) && !empty($gotowebinarconfig->access_token_time) && $gotowebinarconfig->access_token_time + self::EXPIRY_TIME_IN_SECOND > time()) {
-            return $gotowebinarconfig->access_token;
+    public function getaccesstoken() {
+
+        if (isset($this->access_token_time) && !empty($this->access_token_time) &&
+                $this->access_token_time + self::EXPIRY_TIME_IN_SECOND > time()) {
+            return $this->accesstoken;
         } else {
-            return $this->getAccessTokenWithRefreshToken($gotowebinarconfig->refresh_token);
+            return $this->getaccesstokenwithrefreshtoken($this->refreshtoken);
         }
     }
 
@@ -137,57 +120,43 @@ class GoToOAuth {
         curl_setopt($ch, CURLOPT_URL, self::BASE_URL . $endpoint);
         curl_setopt($ch, CURLOPT_POST, true);
 
-
-
         $headers = [
             'Authorization: Bearer ' . $this->getAccessToken()
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        // echo $authorization;
-
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        $serveroutput = curl_exec($ch);
 
-        $server_output = curl_exec($ch);
-        $chinfo = curl_getinfo($ch);
-        
         curl_close($ch);
-       // if ($chinfo['http_code'] == 202) {
-            //return json_decode($server_output);
-       // }
-        return json_decode($server_output);
+
+        return json_decode($serveroutput);
     }
 
     public function put($endpoint, $data) {
-
+        global $CFG;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::BASE_URL . $endpoint);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 
-
         $headers = [
             'Authorization: Bearer ' . $this->getAccessToken()
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        // echo $authorization;
-
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        $serveroutput = curl_exec($ch);
 
-        $server_output = curl_exec($ch);
-        $chinfo = curl_getinfo($ch);
         curl_close($ch);
-        if ($chinfo['http_code'] == 202) {
-            return true;
-        }
 
-        return false;
+        $result = json_decode($serveroutput);
+        return true;
     }
 
     public function get($endpoint) {
@@ -201,72 +170,63 @@ class GoToOAuth {
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $server_output = curl_exec($ch);
-        $chinfo = curl_getinfo($ch);
+        $serveroutput = curl_exec($ch);
+
         curl_close($ch);
-        if ($chinfo['http_code'] == 200) {
-            return json_decode($server_output);
-        }
-        return false;
+
+        return json_decode($serveroutput);
     }
 
-    public function delete($endpoint) {
+    public function delete($endpoint, $data=null) {
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::BASE_URL . $endpoint);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-       
+        
 
         $headers = [
-            'Authorization: Bearer ' . $this->getAccessToken()
+            'Authorization: Bearer ' .$this->getAccessToken()
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-      
+        if($data){
+         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));    
+        }
+       
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        $serveroutput = curl_exec($ch);
 
-        $server_output = curl_exec($ch);
-        $chinfo = curl_getinfo($ch);
-        if($chinfo['http_code']){
-            
-        }
         curl_close($ch);
 
-        $result = json_decode($server_output);
+        $result = json_decode($serveroutput);
     }
 
-    public function getSetupStatus() {
+    public function getsetupstatus() {
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::BASE_URL . "/oauth/v2/token");
         curl_setopt($ch, CURLOPT_POST, true);
-
-        if (empty($this->consumer_key) || empty($this->consumer_secret) || empty($this->refresh_token)) {
-            return false;
-        }
+        $gotowebinarconfig = get_config(self::PLUGIN_NAME);
 
         $headers = [
-            'Authorization: Basic ' . base64_encode($this->consumer_key . ":" . $this->consumer_secret),
+            'Authorization: Basic ' . base64_encode($gotowebinarconfig->consumer_key . ":" . $gotowebinarconfig->consumer_secret),
             'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $data = ['grant_type' => 'refresh_token', 'refresh_token' => $this->refresh_token];
+        $data = ['grant_type' => 'refresh_token', 'refresh_token' => $this->refreshtoken];
         curl_setopt($ch, CURLOPT_POSTFIELDS, self::encode_attributes($data));
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-
-        $server_output = curl_exec($ch);
+        $serveroutput = curl_exec($ch);
         $chinfo = curl_getinfo($ch);
         curl_close($ch);
 
-
         if ($chinfo['http_code'] === 200) {
 
-            return json_decode($server_output);
+            return json_decode($serveroutput);
         }
 
         return false;
@@ -281,21 +241,40 @@ class GoToOAuth {
         return join('&', $return);
     }
 
-    public function update_settings($access_token, $refresh_token, $organizer_key, $account_key) {
+    private function update_access_token($response) {
+        global $DB;
+        if (isset($response) && isset($response->access_token) && isset($response->refresh_token) &&
+                isset($response->organizer_key) && isset($response->account_key)) {
+            $gotowebinar_licence = $DB->get_record('gotowebinar_licence', array('organizer_key' => $response->organizer_key));
 
-        set_config(self::ACCESS_TOKEN, $access_token, self::PLUGIN_NAME);
-        set_config(self::REFRESH_TOKEN, $refresh_token, self::PLUGIN_NAME);
-        set_config(self::ACCESS_TOKEN_TIME, time(), self::PLUGIN_NAME);
-        set_config(self::ORGANISER_KEY, $organizer_key, self::PLUGIN_NAME);
-        set_config(self::ACCOUNT_KEY, $account_key, self::PLUGIN_NAME);
+            if (!$gotowebinar_licence) {
+                $gotowebinar_licence = new \stdClass();
+                $gotowebinar_licence->email = $response->email;
+                $gotowebinar_licence->first_name = $response->firstName;
+                $gotowebinar_licence->last_name = $response->lastName;
+                $gotowebinar_licence->access_token = $response->access_token;
+                $gotowebinar_licence->refresh_token = $response->refresh_token;
+                $gotowebinar_licence->token_type = $response->token_type;
+                $gotowebinar_licence->expires_in = $response->expires_in;
+                $gotowebinar_licence->account_key = $response->account_key;
+                $gotowebinar_licence->organizer_key = $response->organizer_key;
+                $gotowebinar_licence->timecreated = time();
+                $gotowebinar_licence->timemodified = time();
+                $gotowebinar_licence->access_token_time = time();
+                $DB->insert_record('gotowebinar_licence', $gotowebinar_licence);
+            } else {
+                $gotowebinar_licence->access_token = $response->access_token;
+                $gotowebinar_licence->refresh_token = $response->refresh_token;
+                $gotowebinar_licence->timemodified = time();
+                $gotowebinar_licence->access_token_time = time();
 
+                $DB->update_record('gotowebinar_licence', $gotowebinar_licence);
+            }
 
-        $this->access_token = $access_token;
-        $this->refresh_token = $refresh_token;
-        $this->organizer_key = $organizer_key;
-        $this->account_key = $account_key;
-
-        $this->access_token_time = time();
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

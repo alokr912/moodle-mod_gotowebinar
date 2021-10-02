@@ -27,7 +27,6 @@ class cron_task extends \core\task\scheduled_task {
   
     
     public function get_name(): string {
-        
+        return  get_string('crontask', 'mod_gotowebinar');    
     }
-
 }

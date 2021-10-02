@@ -17,12 +17,24 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
     function definition() {
 
         $mform = $this->_form;
+        $licences = $this->get_gotowebinar_licence();
+        if (!$licences) {
+            $link = new moodle_url('/admin/settings.php?section=modsettinggotowebinar');
+            throw new moodle_exception('incompletesetup', 'gotowebinar', $link);
+        }
         $gotowebinarconfig = get_config('gotowebinar');
         $mform->addElement('header', 'general', get_string('generalsetting', 'gotowebinar'));
         // Adding a text element
         $mform->addElement('text', 'name', get_string('meetingname', 'gotowebinar'));
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('meetingnamerequired', 'gotowebinar'), 'required', '', 'server');
+        $mform->addElement('select', 'gotowebinar_licence', get_string('licence', 'gotowebinar'), $licences);
+        if(isset($this->get_current()->update)){
+           $mform->disabledIf('gotowebinar_licence',null);
+        }else{
+        $mform->addRule('gotowebinar_licence', get_string('licencerequired', 'gotowebinar'), 'required', '', 'client');
+            
+        } 
         // $this->standard_intro_elements(get_string('gotowebinarintro', 'gotowebinar'));
         // Adding a new text editor
         // $this->add_intro_editor(true, get_string('gotowebinarintro', 'gotowebinar')); deprecated
@@ -139,6 +151,16 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
             }
         }
         return $data;
+    }
+     private function get_gotowebinar_licence() {
+        global $DB;
+        $licences = array();
+        $gotomeeting_licences = $DB->get_records('gotowebinar_licence',null,'email');
+        foreach ($gotomeeting_licences as $gotomeeting_licences) {
+
+            $licences[$gotomeeting_licences->id] = $gotomeeting_licences->email;
+        }
+        return $licences;
     }
 
 }

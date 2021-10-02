@@ -61,7 +61,7 @@ function xmldb_gotowebinar_upgrade($oldversion) {
         // Assignment savepoint reached.
         upgrade_mod_savepoint(true, 2017070902, 'gotowebinar');
     }
-
+   
 
 
 

@@ -28,13 +28,14 @@ function gotowebinar_add_instance($data, $mform = null) {
     global $USER, $DB;
 
     $response = createGoToWebibnar($data);
-
+    
     if ($response) {
         $data->userid = $USER->id;
         $data->timecreated = time();
         $data->timemodified = time();
-
-        $data->webinarkey = $response;
+        
+        $data->webinarkey =$response;
+        
 
         $data->id = $DB->insert_record('gotowebinar', $data);
     }
@@ -186,7 +187,7 @@ function gotowebinar_delete_instance($id) {
         return false;
     }
     $context = context_module::instance($cm->id);
-    deleteGoToWebinar($gotowebinar->webinarkey);
+    deleteGoToWebinar($gotowebinar->webinarkey,$gotowebinar->gotowebinar_licence);
 
     // Delete calendar  event
     $param = array('courseid' => $gotowebinar->course, 'instance' => $gotowebinar->id,
@@ -232,6 +233,5 @@ function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
             OSD::authenticate_with_password(trim($config->gototraining_userid), trim($config->gototraining_password));
         }
     }
-    // https://api.getgo.com/G2W/rest/v2/organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/attendees
     return false;
 }
