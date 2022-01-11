@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * GoToWebinar module form
  *
@@ -18,12 +17,24 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
     function definition() {
 
         $mform = $this->_form;
+        $licences = $this->get_gotowebinar_licence();
+        if (!$licences) {
+            $link = new moodle_url('/admin/settings.php?section=modsettinggotowebinar');
+            throw new moodle_exception('incompletesetup', 'gotowebinar', $link);
+        }
         $gotowebinarconfig = get_config('gotowebinar');
         $mform->addElement('header', 'general', get_string('generalsetting', 'gotowebinar'));
         // Adding a text element
         $mform->addElement('text', 'name', get_string('meetingname', 'gotowebinar'));
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('meetingnamerequired', 'gotowebinar'), 'required', '', 'server');
+        $mform->addElement('select', 'gotowebinar_licence', get_string('licence', 'gotowebinar'), $licences);
+        if(isset($this->get_current()->update)){
+           $mform->disabledIf('gotowebinar_licence',null);
+        }else{
+            $mform->addRule('gotowebinar_licence', get_string('licencerequired', 'gotowebinar'), 'required', '', 'client');
+            
+        }
         // $this->standard_intro_elements(get_string('gotowebinarintro', 'gotowebinar'));
         // Adding a new text editor
         // $this->add_intro_editor(true, get_string('gotowebinarintro', 'gotowebinar')); deprecated
@@ -31,7 +42,7 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
 
         $mform->addElement('header', 'meetingheader', get_string('meetingheader', 'gotowebinar'));
 
-
+          
         $mform->addElement('date_time_selector', 'startdatetime', get_string('startdatetime', 'gotowebinar'));
         $mform->setDefault('startdatetime', time() + 300);
         $mform->addRule('startdatetime', 'Occurs required', 'required', 'client');
@@ -40,6 +51,12 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
 
         $mform->setDefault('enddatetime', time() + 3900);
         $mform->addRule('enddatetime', 'Occurs required', 'required', 'client');
+
+        $mform->addElement('selectyesno', 'confirmationemail', get_string('confirmationemail', 'gotowebinar'));
+        $mform->addElement('selectyesno', 'reminderemail', get_string('reminderemail', 'gotowebinar'));
+        $mform->addElement('selectyesno', 'absenteefollowupemail', get_string('absenteefollowupemail', 'gotowebinar'));
+        $mform->addElement('selectyesno', 'attendeefollowupemail', get_string('attendeefollowupemail', 'gotowebinar'));
+        $mform->addElement('selectyesno', 'sendcancellationemails', get_string('sendcancellationemails', 'gotowebinar'));
 
         // Adding hidden items
         $mform->addElement('hidden', 'meetingpublic', 1);
@@ -60,21 +77,23 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         // numbers to be 1, this will not apply unless checkbox is ticked.
     }
 
+    /**
+     * Add elements for setting the custom completion rules.
+     *  
+     * @category completion
+     * @return array List of added element names, or names of wrapping group elements.
+     */
     function add_completion_rules() {
         $mform = &$this->_form;
 
-        /* $group = array();
-         $group[] = & $mform->createElement('checkbox', 'completionparticipationenabled', '', get_string('completiongotowebinar', 'mod_gotowebinar'));
-         $group[] = & $mform->createElement('text', 'completionparticipation', '', array('size' => 3, 'value' => 50));
-         $mform->setType('completionparticipation', PARAM_INT);
-         $mform->addGroup($group, 'completiongotowebinargroup', get_string('completiongotowebinargroup', 'mod_gotowebinar'), array(' '), false);
-         $mform->addHelpButton('completiongotowebinargroup', 'completiongotowebinargroup', 'gotowebinar');
-         $mform->disabledIf('completionparticipationenabled', 'meetingtype', 'eq', 'gotomeeting');
-         $mform->disabledIf('completionparticipation', 'meetingtype', 'eq', 'gotomeeting');
-         $mform->disabledIf('completionparticipation', 'completionparticipationenabled', 'notchecked');
-
-         return array('completiongotowebinargroup');*/
-        return array();
+        $group = array();
+        $group[] = & $mform->createElement('checkbox', 'completionparticipationenabled', '', get_string('completiongotowebinar', 'gotowebinar'));
+        $group[] = & $mform->createElement('text', 'completionparticipation', '', array('size' => 3, 'value' => 50));
+        $mform->setType('completionparticipation', PARAM_INT);
+        $mform->addGroup($group, 'completiongotowebinargroup', get_string('completiongotowebinargroup', 'gotowebinar'), array(' '), false);
+        $mform->addHelpButton('completiongotowebinargroup', 'completiongotowebinargroup', 'gotowebinar');
+        $mform->disabledIf('completiongotowebinargroup', 'completionparticipationenabled', 'notchecked');
+        return array('completiongotowebinargroup');
     }
 
     function completion_rule_enabled($data) {
@@ -82,7 +101,7 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
     }
 
     function validation($data, $files) {
-        global $DB;
+
         $errors = parent::validation($data, $files);
 
         if ($data['startdatetime'] < time()) {
@@ -118,7 +137,6 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
             if ($autocompletion && ($data['completionparticipation'] > 100 || $data['completionparticipation'] <= 0)) {
                 $errors['completiongotowebinargroup'] = 'Please enter a valid percentage value between 1 and 100';
             }
-
         }
         return $errors;
     }
@@ -136,6 +154,17 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
             }
         }
         return $data;
+    }
+
+    private function get_gotowebinar_licence() {
+        global $DB;
+        $licences = array();
+        $gotomeeting_licences = $DB->get_records('gotowebinar_licence', null, 'email');
+        foreach ($gotomeeting_licences as $gotomeeting_licences) {
+
+            $licences[$gotomeeting_licences->id] = $gotomeeting_licences->email;
+        }
+        return $licences;
     }
 
 }
