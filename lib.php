@@ -28,14 +28,13 @@ function gotowebinar_add_instance($data, $mform = null) {
     global $USER, $DB;
 
     $response = createGoToWebibnar($data);
-    
+
     if ($response) {
         $data->userid = $USER->id;
         $data->timecreated = time();
         $data->timemodified = time();
-        
-        $data->webinarkey =$response;
-        
+
+        $data->webinarkey = $response;
 
         $data->id = $DB->insert_record('gotowebinar', $data);
     }
@@ -178,36 +177,22 @@ function gotowebinar_update_instance($gotowebinar) {
 function gotowebinar_delete_instance($id) {
     global $DB, $CFG;
 
-    $result = false;
     if (!$gotowebinar = $DB->get_record('gotowebinar', array('id' => $id))) {
+        var_dump("aa");
         return false;
     }
 
     if (!$cm = get_coursemodule_from_instance('gotowebinar', $id)) {
+         var_dump("bb");
         return false;
     }
     $context = context_module::instance($cm->id);
-    deleteGoToWebinar($gotowebinar->webinarkey,$gotowebinar->gotowebinar_licence);
-
-    // Delete calendar  event
-    $param = array('courseid' => $gotowebinar->course, 'instance' => $gotowebinar->id,
-        'groupid' => 0, 'modulename' => 'gotowebinar');
-
-    $eventid = $DB->get_field('event', 'id', $param);
-    if ($eventid) {
-        $calendarevent = calendar_event::load($eventid);
-        $calendarevent->delete();
+    if(deleteGoToWebinar($gotowebinar->webinarkey, $gotowebinar->gotowebinar_licence)){
+         var_dump("cc");
+        return true;
     }
 
-    $event = \mod_gotowebinar\event\gotowebinar_deleted::create(array(
-                'objectid' => $id,
-                'context' => $context,
-                'other' => array('modulename' => $gotowebinar->name, 'startdatetime' => $gotowebinar->startdatetime),
-    ));
-
-    $event->trigger();
-
-    return $result;
+    return false;
 }
 
 /*
@@ -218,20 +203,32 @@ function gotowebinar_delete_instance($id) {
 
 function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
     global $CFG, $DB;
-    $result = $type;
-    if (!($gotowebinar = $DB->get_record('gotowebinar', array('id' => $cm->instance)))) {
-        throw new Exception("Can't find GoToLMS {$cm->instance}");
-    } // as of now it is not implemented will implement it soon
-    if ($gotowebinar->completionparticipation && $gotowebinar->completionparticipation > 0 && $gotowebinar->completionparticipation <= 100) {
-        if ($gotowebinar->meetingtype == 'gotowebinar') {
-            $config = get_config('gotowebinar');
-            OSD::setup(trim($config->gotowebinar_consumer_key));
-            OSD::authenticate_with_password(trim($config->gotowebinar_userid), trim($config->gotowebinar_password));
-        } else if ($gotowebinar->meetingtype == 'gototraining') {
-            $config = get_config('gotowebinar');
-            OSD::setup(trim($config->gototraining_consumer_key));
-            OSD::authenticate_with_password(trim($config->gototraining_userid), trim($config->gototraining_password));
+    require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
+
+    $completion = new completion_info($course);
+    $gotowebinar = $DB->get_record('gotowebinar', array('id' => $cm->instance));
+
+    if (!$completion->is_enabled($cm) || empty($gotowebinar->completionparticipation)) {
+
+        return false;
+    }
+
+    $required_duration = (($gotowebinar->enddatetime - $gotowebinar->startdatetime) * $gotowebinar->completionparticipation) / 100;
+
+    $goToOauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
+    $organiser_key = $goToOauth->organizerkey;
+    $webinarkey = $gotowebinar->webinarkey;
+    $response = $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$webinarkey}/attendees");
+    foreach ($response->_embedded->attendeeParticipationResponses as $at) {
+
+        $gotowebinar_registrant = $DB->get_record('gotowebinar_registrant', array('registrantkey' => $at->registrantKey));
+
+        if ($gotowebinar_registrant && $required_duration <= $at->attendanceTimeInSeconds) {
+            return true;
+
+            // $completion->update_state($cm, COMPLETION_COMPLETE, $gotowebinar_registrant->userid);
         }
     }
+
     return false;
 }

@@ -10,6 +10,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
+require_once($CFG->dirroot . '/lib/completionlib.php');
 
 function createGoToWebibnar($gotowebinar) {
     global $USER, $DB, $CFG;
@@ -129,7 +130,7 @@ function deleteGoToWebinar($gotoid, $licence) {
     $goToOauth = new mod_gotowebinar\GoToOAuth($licence);
 
     $key = $goToOauth->organizerkey;
-    $responce = $goToOauth->delete("/G2W/rest/v2/organizers/{$key}/webinars/{$gotoid}",null);
+    $responce = $goToOauth->delete("/G2W/rest/v2/organizers/{$key}/webinars/{$gotoid}", null);
 
     if ($responce) {
         return true;
@@ -223,7 +224,7 @@ function get_gotowebinarinfo($gotowebinar) {
     return $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$gotowebinar->webinarkey}");
 }
 
-function get_gotowebinar_attendance() {
+function get_gotowebinar_attendance1() {
     global $USER, $DB, $CFG;
 
     $goToOauth = new mod_gotowebinar\GoToOAuth();
@@ -244,7 +245,7 @@ function get_gotowebinar_audio_info($webinarkey, $license) {
 
     $organiser_key = $goToOauth->organizerkey;
     $audio_info = $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$webinarkey}/audio");
-   
+
     if ($audio_info && $audio_info->confCallNumbers && $audio_info->confCallNumbers->IT->toll) {
         $response['toll'] = $audio_info->confCallNumbers->IT->toll;
     }
@@ -273,4 +274,38 @@ function sync_gotowebinar_completion_status() {
 
 function sync_gotowebinar_registration() {
     
+}
+
+function get_gotowebinar_attendance() {
+    global $DB;
+    $gotowebinars = $DB->get_records('gotowebinar');
+
+    foreach ($gotowebinars as $gotowebinar) {
+        $course = get_course($gotowebinar->course);
+        $completion = new completion_info($course);
+
+        $cm = get_coursemodule_from_instance('gotowebinar', $gotowebinar->id);
+
+        if (!$completion->is_enabled($cm) || empty($gotowebinar->completionparticipation)) {
+            echo "Completion not enabled<br>";
+            continue;
+        }
+
+        $required_duration = (($gotowebinar->enddatetime - $gotowebinar->startdatetime) * $gotowebinar->completionparticipation) / 100;
+
+        $goToOauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
+        $organiser_key = $goToOauth->organizerkey;
+        $webinarkey = $gotowebinar->webinarkey;
+        $response = $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$webinarkey}/attendees");
+        foreach ($response->_embedded->attendeeParticipationResponses as $at) {
+
+            $gotowebinar_registrant = $DB->get_record('gotowebinar_registrant', array('registrantkey' => $at->registrantKey));
+
+            if ($gotowebinar_registrant && $required_duration <= $at->attendanceTimeInSeconds) {
+                echo "Marking completion for ==>$gotowebinar_registrant->userid in CMID==>$cm->id";
+               
+                $completion->update_state($cm, COMPLETION_COMPLETE, $gotowebinar_registrant->userid);
+            }
+        }
+    }
 }
