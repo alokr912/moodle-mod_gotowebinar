@@ -11,4 +11,4 @@ Home -> Site administration -> Location -> Update timezones
   <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" />
 </a>
 
-Latest version of this plugin is available at https://www.mdlintegration.com/moodle-gotowebinar-integration/
+
