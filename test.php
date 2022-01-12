@@ -6,3 +6,6 @@
  * and open the template in the editor.
  */
 
+require_once('../../config.php');
+require_once('locallib.php');
+get_gotowebinar_attendance();
