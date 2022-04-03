@@ -68,6 +68,10 @@ $string['license_disabled'] = 'You have sucessfully disabled the GoToWebinar lic
 $string['license_enabled'] = 'You have sucessfully enabled the GoToWeninar license: {$a}';
 $string['license_heading'] = 'GoToWebinar License';
 $string['license_title'] = 'GoToWebinar License';
+$string['license_added_successfully'] = 'GoToWebinar license added  successfully';
+$string['license_added_failure'] = 'Unable to add GoToWebinar license';
+$string['oauth_status_heading'] = 'GoToWebinar license status';
+$string['oauth_status_title'] = 'GoToWebinar license status';
 
 
 
