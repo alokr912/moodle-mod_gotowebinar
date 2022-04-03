@@ -159,7 +159,7 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
     private function get_gotowebinar_licence() {
         global $DB;
         $licences = array();
-        $gotomeeting_licences = $DB->get_records('gotowebinar_licence', null, 'email');
+        $gotomeeting_licences = $DB->get_records('gotowebinar_licence', array('active'=>1), 'email');
         foreach ($gotomeeting_licences as $gotomeeting_licences) {
 
             $licences[$gotomeeting_licences->id] = $gotomeeting_licences->email;
