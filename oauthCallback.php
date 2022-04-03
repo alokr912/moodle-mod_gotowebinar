@@ -16,15 +16,19 @@ $goToOAuth= new mod_gotowebinar\GoToOAuth();
 global $CFG;
 $result = $goToOAuth->getAccessTokenWithCode($code);
 $PAGE->set_context(context_system::instance());
-$PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php'));
+$PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php',array('code'=>$code)));
 $PAGE->set_pagelayout('admin');
 $PAGE->set_heading('GoTo config test report');
 $PAGE->set_title('GoTo config test report');
 echo $OUTPUT->header();
 if($result){
      echo html_writer::div('GoToWebinar setup status ', 'alert alert-info');
+      notice('b','');
 }else{
      echo html_writer::div('GoToWebinar setup status ', 'alert alert-error');
+     notice('a');
+     
 }
+
 echo $OUTPUT->footer();
 

@@ -61,7 +61,42 @@ function xmldb_gotowebinar_upgrade($oldversion) {
         // Assignment savepoint reached.
         upgrade_mod_savepoint(true, 2017070902, 'gotowebinar');
     }
-   
+      if ($oldversion < 2017070902) {
+        // Define field hidegrader to be added to gotowebinar_registrant.
+        $table = new xmldb_table('gotowebinar_licence');
+        $field = new xmldb_field('confirmationemail', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'meetingpublic');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('reminderemail', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'confirmationemail');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('absenteefollowupemail', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'reminderemail');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('attendeefollowupemail', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'absenteefollowupemail');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('sendcancellationemails', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'attendeefollowupemail');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Assignment savepoint reached.
+        upgrade_mod_savepoint(true, 2017070902, 'gotowebinar');
+    }
+    
 
 
 

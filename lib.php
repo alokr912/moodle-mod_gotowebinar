@@ -35,7 +35,7 @@ function gotowebinar_add_instance($data, $mform = null) {
         $data->timemodified = time();
 
         $data->webinarkey = $response;
-
+      
         $data->id = $DB->insert_record('gotowebinar', $data);
     }
 
@@ -129,7 +129,7 @@ function gotowebinar_update_instance($gotowebinar) {
         $oldgotowebinar->confirmationemail = $gotowebinar->confirmationemail;
         $oldgotowebinar->reminderemail = $gotowebinar->reminderemail;
         $oldgotowebinar->absenteefollowupemail = $gotowebinar->absenteefollowupemail;
-        $oldgotowebinar->absenteefollowupemail = $gotowebinar->absenteefollowupemail;
+        $oldgotowebinar->attendeefollowupemail = $gotowebinar->attendeefollowupemail;
         $oldgotowebinar->sendcancellationemails = $gotowebinar->sendcancellationemails;
 
         $DB->update_record('gotowebinar', $oldgotowebinar);
