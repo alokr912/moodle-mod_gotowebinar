@@ -18,15 +18,19 @@ $result = $goToOAuth->getAccessTokenWithCode($code);
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php',array('code'=>$code)));
 $PAGE->set_pagelayout('admin');
-$PAGE->set_heading('GoTo config test report');
-$PAGE->set_title('GoTo config test report');
+$PAGE->set_heading(get_string('oauth_status_heading','mod_gotowebinar'));
+$PAGE->set_title(get_string('oauth_status_title','mod_gotowebinar'));
 echo $OUTPUT->header();
+$link = new moodle_url('/admin/settings.php',array('section'=>'modsettinggotowebinar'));
 if($result){
-     echo html_writer::div('GoToWebinar setup status ', 'alert alert-info');
-      notice('b','');
+    
+     $success_message =get_string('license_added_successfully','mod_gotowebinar');
+     
+      notice($success_message,$link);
 }else{
-     echo html_writer::div('GoToWebinar setup status ', 'alert alert-error');
-     notice('a');
+    
+      $failure_message =get_string('license_added_failure','mod_gotowebinar');
+     notice($failure_message,$link);
      
 }
 
