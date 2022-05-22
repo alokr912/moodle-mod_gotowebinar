@@ -22,7 +22,7 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
-require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
+require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotoOAuth.php';
 require_once($CFG->dirroot . '/lib/completionlib.php');
 
 function createGoToWebibnar($gotowebinar) {

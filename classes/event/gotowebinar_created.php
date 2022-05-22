@@ -22,6 +22,7 @@
  */
 
 namespace mod_gotowebinar\event;
+
 defined('MOODLE_INTERNAL') || die();
 
 

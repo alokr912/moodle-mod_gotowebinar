@@ -23,7 +23,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot.'/mod/gotowebinar/classes/gotooauth.class.php');
+    require_once($CFG->dirroot.'/mod/gotowebinar/classes/gotoOAuth.php');
 
     //----------------  Consumer Key Settings -----------------------------------------//
     $name = 'gotowebinar/consumer_key';
