@@ -24,27 +24,29 @@ class backup_gotowebinar_activity_structure_step extends backup_activity_structu
 
     protected function define_structure() {
         $gotowebinar = new backup_nested_element('gotowebinar', array('id'),
-            array('course',
-                'name',
-                'intro',
-                'introformat',
-                'meetingtype',
-                'userid',
-                'meetinginfo',
-                'gotoid',
-                'startdatetime',
-                'enddatetime',
-                'completionparticipation',
-                'meetingpublic',
-                'timecreated',
-                'timemodified'));
+                array('course',
+            'name',
+            'intro',
+            'introformat',
+            'meetingtype',
+            'userid',
+            'meetinginfo',
+            'gotoid',
+            'startdatetime',
+            'enddatetime',
+            'completionparticipation',
+            'meetingpublic',
+            'timecreated',
+            'timemodified'));
 
-        $gotowebinarregistrants = new backup_nested_element('gotowebinar_registrants', array('id'), array('course', 'cmid', 'email', 'status', 'joinurl',
+        $gotowebinarregistrants = new backup_nested_element('gotowebinar_registrants', array('id'),
+                array('course', 'cmid', 'email', 'status', 'joinurl',
             'confirmationurl', 'registrantkey', 'userid',
             'gotoid', 'timecreated', 'timemodified'));
         $gotowebinar->add_child($gotowebinarregistrants);
         $gotowebinar->set_source_table('gotowebinar', array('id' => backup::VAR_ACTIVITYID));
-        $gotowebinarregistrants->set_source_sql('SELECT * FROM {gotowebinar_registrant}  WHERE gotowebinarid = ?', array(backup::VAR_PARENTID));
+        $gotowebinarregistrants->set_source_sql('SELECT * FROM {gotowebinar_registrant}  WHERE gotowebinarid = ?',
+                array(backup::VAR_PARENTID));
         return $this->prepare_activity_structure($gotowebinar);
     }
 

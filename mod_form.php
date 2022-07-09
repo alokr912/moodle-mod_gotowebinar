@@ -85,10 +85,12 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         $mform = &$this->_form;
 
         $group = array();
-        $group[] = & $mform->createElement('checkbox', 'completionparticipationenabled', '', get_string('completiongotowebinar', 'gotowebinar'));
+        $group[] = & $mform->createElement('checkbox', 'completionparticipationenabled', '',
+                        get_string('completiongotowebinar', 'gotowebinar'));
         $group[] = & $mform->createElement('text', 'completionparticipation', '', array('size' => 3, 'value' => 50));
         $mform->setType('completionparticipation', PARAM_INT);
-        $mform->addGroup($group, 'completiongotowebinargroup', get_string('completiongotowebinargroup', 'gotowebinar'), array(' '), false);
+        $mform->addGroup($group, 'completiongotowebinargroup', get_string('completiongotowebinargroup', 'gotowebinar'),
+                array(' '), false);
         $mform->addHelpButton('completiongotowebinargroup', 'completiongotowebinargroup', 'gotowebinar');
         $mform->disabledIf('completiongotowebinargroup', 'completionparticipationenabled', 'notchecked');
         return array('completiongotowebinargroup');
@@ -126,7 +128,6 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
                 $errors['enddatetime'] = "Start date must be in the range of the course week";
             }
         }
-        //
 
         if (!empty($data['completionunlocked']) && (!empty($data['completionparticipationenabled']))) {
             // Turn off completion settings if the checkboxes aren't ticked.

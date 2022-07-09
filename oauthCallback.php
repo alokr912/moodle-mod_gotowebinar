@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -20,15 +19,13 @@
  * and open the template in the editor.
  */
 require_once('../../config.php');
-require_once('./classes/gotooauth.class.php');
+require_once('./classes/gotoOAuth.php');
 $code = required_param('code', PARAM_RAW);
-require_login();
-if (!is_siteadmin()) {
-    print_error('Acess denied');
-}
-$goToOAuth = new mod_gotowebinar\GoToOAuth();
+require_admin();
+
+$gotooauth = new mod_gotowebinar\GoToOAuth();
 global $CFG;
-$result = $goToOAuth->getAccessTokenWithCode($code);
+$result = $gotooauth->getAccessTokenWithCode($code);
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php', array('code' => $code)));
 $PAGE->set_pagelayout('admin');
@@ -38,13 +35,13 @@ echo $OUTPUT->header();
 $link = new moodle_url('/admin/settings.php', array('section' => 'modsettinggotowebinar'));
 if ($result) {
 
-    $success_message = get_string('license_added_successfully', 'mod_gotowebinar');
+    $successmessage = get_string('license_added_successfully', 'mod_gotowebinar');
 
-    notice($success_message, $link);
+    notice($successmessage, $link);
 } else {
 
-    $failure_message = get_string('license_added_failure', 'mod_gotowebinar');
-    notice($failure_message, $link);
+    $failuremessage = get_string('license_added_failure', 'mod_gotowebinar');
+    notice($failuremessage, $link);
 }
 
 echo $OUTPUT->footer();

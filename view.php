@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -38,18 +37,18 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 
 $meeturl = '';
 $gototrainingdownloads = array();
-$gotowebinar_details = get_gotowebinarinfo($gotowebinar);
+$gotowebinardetails = get_gotowebinarinfo($gotowebinar);
 
 $meeturl = get_gotowebinar($gotowebinar);
 
-$audio_info = get_gotowebinar_audio_info($gotowebinar->webinarkey, $gotowebinar->gotowebinar_licence);
+$audioinfo = get_gotowebinar_audio_info($gotowebinar->webinarkey, $gotowebinar->gotowebinar_licence);
 
 $meetinginfo = json_decode($gotowebinar->meetinfo);
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/gotowebinar:view', $context);
 
-$access_code = $audio_info['attendee_accesscode'];
+$accesscode = $audioinfo['attendee_accesscode'];
 $PAGE->set_url('/mod/gotowebinar/view.php', array('id' => $cm->id));
 $PAGE->set_title($course->shortname . ': ' . $gotowebinar->name);
 $PAGE->set_heading($course->fullname);
@@ -68,7 +67,7 @@ $cell1 = new html_table_cell(get_string('accountname', 'mod_gotowebinar'));
 $cell1->colspan = 1;
 $cell1->style = 'text-align:left;';
 
-$cell2 = new html_table_cell("<b>" . explode('@', $gotowebinar_details->organizerEmail)[0] . "</b>");
+$cell2 = new html_table_cell("<b>" . explode('@', $gotowebinardetails->organizerEmail)[0] . "</b>");
 $cell2->colspan = 1;
 $cell2->style = 'text-align:left;';
 
@@ -131,7 +130,7 @@ $cell1 = new html_table_cell(get_string('webinarid', 'mod_gotowebinar'));
 $cell1->colspan = 1;
 $cell1->style = 'text-align:left;';
 
-$cell2 = new html_table_cell("<b>" . $gotowebinar_details->webinarID . "</b>");
+$cell2 = new html_table_cell("<b>" . $gotowebinardetails->webinarID . "</b>");
 $cell2->colspan = 1;
 $cell2->style = 'text-align:left;';
 
@@ -141,7 +140,7 @@ $cell1 = new html_table_cell(get_string('toll', 'mod_gotowebinar'));
 $cell1->colspan = 1;
 $cell1->style = 'text-align:left;';
 
-$cell2 = new html_table_cell("<b>" . $audio_info['toll'] . "</b>");
+$cell2 = new html_table_cell("<b>" . $audioinfo['toll'] . "</b>");
 $cell2->colspan = 1;
 $cell2->style = 'text-align:left;';
 
@@ -151,7 +150,7 @@ $cell1 = new html_table_cell(get_string('accesscode', 'mod_gotowebinar'));
 $cell1->colspan = 1;
 $cell1->style = 'text-align:left;';
 
-$cell2 = new html_table_cell("<b>" . $access_code . "</b>");
+$cell2 = new html_table_cell("<b>" . $accesscode . "</b>");
 $cell2->colspan = 1;
 $cell2->style = 'text-align:left;';
 

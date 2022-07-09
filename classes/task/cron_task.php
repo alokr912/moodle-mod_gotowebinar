@@ -60,7 +60,8 @@ class cron_task extends \core\task\scheduled_task {
                 continue;
             }
 
-            $requiredduration = (($gotowebinar->enddatetime - $gotowebinar->startdatetime) * $gotowebinar->completionparticipation) / 100;
+            $requiredduration = (($gotowebinar->enddatetime - $gotowebinar->startdatetime) *
+                    $gotowebinar->completionparticipation) / 100;
 
             $gototauth = new \mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
             $organiserkey = $gototauth->organizerkey;

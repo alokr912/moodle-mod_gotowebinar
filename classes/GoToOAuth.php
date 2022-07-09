@@ -20,6 +20,7 @@
  * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_gotowebinar;
 
 class GotoOAuth {
@@ -41,10 +42,10 @@ class GotoOAuth {
     private $consumerkey;
     private $consumersecret;
 
-    public function __construct($licence_id = null) {
+    public function __construct($licenceid = null) {
         global $DB;
 
-        $licence = $DB->get_record('gotowebinar_licence', array('id' => $licence_id));
+        $licence = $DB->get_record('gotowebinar_licence', array('id' => $licenceid));
 
         if ($licence) {
             $this->organizerkey = !empty($licence->organizer_key) ? $licence->organizer_key : null;
@@ -152,7 +153,7 @@ class GotoOAuth {
     }
 
     public function put($endpoint, $data) {
-        global $CFG;
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::BASE_URL . $endpoint);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -192,21 +193,19 @@ class GotoOAuth {
         return json_decode($serveroutput);
     }
 
-    public function delete($endpoint, $data=null) {
+    public function delete($endpoint, $data = null) {
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::BASE_URL . $endpoint);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-        
 
         $headers = [
-            'Authorization: Bearer ' .$this->getAccessToken()
+            'Authorization: Bearer ' . $this->getAccessToken()
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        if($data){
-         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));    
+        if ($data) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         }
-       
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 

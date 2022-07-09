@@ -27,7 +27,7 @@ require_once($CFG->dirroot . '/mod/gotowebinar/backup/moodle2/backup_gotowebinar
 
 class backup_gotowebinar_activity_task extends backup_activity_task {
 
-    protected function define_my_settings() {    
+    protected function define_my_settings() {
     }
 
     protected function define_my_steps() {

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -228,20 +227,19 @@ function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
         return false;
     }
 
-    $required_duration = (($gotowebinar->enddatetime - $gotowebinar->startdatetime) * $gotowebinar->completionparticipation) / 100;
+    $requiredduration = (($gotowebinar->enddatetime - $gotowebinar->startdatetime) * $gotowebinar->completionparticipation) / 100;
 
-    $goToOauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
-    $organiser_key = $goToOauth->organizerkey;
+    $gotooauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
+    $organiserkey = $gotooauth->organizerkey;
     $webinarkey = $gotowebinar->webinarkey;
-    $response = $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$webinarkey}/attendees");
+    $response = $gotooauth->get("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$webinarkey}/attendees");
     foreach ($response->_embedded->attendeeParticipationResponses as $at) {
 
-        $gotowebinar_registrant = $DB->get_record('gotowebinar_registrant', array('registrantkey' => $at->registrantKey));
+        $gotowebinarregistrant = $DB->get_record('gotowebinar_registrant', array('registrantkey' => $at->registrantKey));
 
-        if ($gotowebinar_registrant && $required_duration <= $at->attendanceTimeInSeconds) {
+        if ($gotowebinarregistrant && $requiredduration <= $at->attendanceTimeInSeconds) {
             return true;
 
-            // $completion->update_state($cm, COMPLETION_COMPLETE, $gotowebinar_registrant->userid);
         }
     }
 
