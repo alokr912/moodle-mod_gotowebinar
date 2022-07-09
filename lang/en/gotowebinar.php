@@ -85,4 +85,10 @@ $string['license_added_successfully'] = 'GoToWebinar license added  successfully
 $string['license_added_failure'] = 'Unable to add GoToWebinar license';
 $string['oauth_status_heading'] = 'GoToWebinar license status';
 $string['oauth_status_title'] = 'GoToWebinar license status';
+$string['gotowebinar:addinstance'] = 'Add a GoToWebinar instance';
+$string['gotowebinar:view'] = 'View GoToWebinar activity';
+$string['gotowebinar:presenter'] = 'Join as GoToWebinar presenter';
+$string['gotowebinar:organiser'] = 'Join as GoToWebinar organiser';
+$string[''] = '';
+$string[''] = '';
 
