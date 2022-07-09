@@ -56,24 +56,24 @@ $string['meetingenddateandtime'] = 'Meeting end date and time';
 $string['joinmeeting'] = 'Join Meeting';
 $string['meetingrecording'] = 'Meeting Recording';
 $string['downloadurl'] = 'Download Link';
-$string['setup']='Add new GoToWebinar license';
-$string['completiongotowebinargroup']='Require to attend ';
-$string['completiongotowebinargroup_help']='Require to attend GoToWebinar';
-$string['completiongotowebinar']='Student must attent this activity minimum percentage to complete it ';
+$string['setup'] = 'Add new GoToWebinar license';
+$string['completiongotowebinargroup'] = 'Require to attend ';
+$string['completiongotowebinargroup_help'] = 'Require to attend GoToWebinar';
+$string['completiongotowebinar'] = 'Student must attent this activity minimum percentage to complete it ';
 
-$string['completiongotowebinar']='Setup GoToWebinar';
-$string['confirmationemail']= 'Send Confirmation email';
-$string['reminderemail']= 'Send reminder email';
-$string['absenteefollowupemail']= 'Send absentee follow-up email';
-$string['attendeefollowupemail']= 'Send attendee follow-up email';
-$string['sendcancellationemails']= 'Send cancellation email';
+$string['completiongotowebinar'] = 'Setup GoToWebinar';
+$string['confirmationemail'] = 'Send Confirmation email';
+$string['reminderemail'] = 'Send reminder email';
+$string['absenteefollowupemail'] = 'Send absentee follow-up email';
+$string['attendeefollowupemail'] = 'Send attendee follow-up email';
+$string['sendcancellationemails'] = 'Send cancellation email';
 $string['webinarkey'] = 'Webinar key';
 $string['toll'] = 'Toll No';
 $string['accesscode'] = 'Access code';
 $string['incompletesetup'] = 'GoTowebinar setup is incomplete, contact your site administrator to configure it.';
 $string['addlicence'] = 'Add new licence';
 $string['licence'] = 'Licence';
-$string['licencerequired']= 'GoWebinar Licence required.';
+$string['licencerequired'] = 'GoWebinar Licence required.';
 $string['webinarid'] = 'Webinar ID';
 $string['accountname'] = 'Account name';
 $string['crontask'] = 'GoToWebinar Cron Task';
@@ -85,8 +85,4 @@ $string['license_added_successfully'] = 'GoToWebinar license added  successfully
 $string['license_added_failure'] = 'Unable to add GoToWebinar license';
 $string['oauth_status_heading'] = 'GoToWebinar license status';
 $string['oauth_status_title'] = 'GoToWebinar license status';
-
-
-
-
 

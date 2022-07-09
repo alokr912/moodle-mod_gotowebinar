@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,7 +23,6 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-
-class mod_gotowebinar_renderer extends plugin_renderer_base{
-
+class mod_gotowebinar_renderer extends plugin_renderer_base {
+    
 }

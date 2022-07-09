@@ -260,30 +260,30 @@ class GotoOAuth {
         global $DB;
         if (isset($response) && isset($response->access_token) && isset($response->refresh_token) &&
                 isset($response->organizer_key) && isset($response->account_key)) {
-            $gotowebinar_licence = $DB->get_record('gotowebinar_licence', array('organizer_key' => $response->organizer_key));
+            $gotowebinarlicence = $DB->get_record('gotowebinar_licence', array('organizer_key' => $response->organizer_key));
 
-            if (!$gotowebinar_licence) {
-                $gotowebinar_licence = new \stdClass();
-                $gotowebinar_licence->email = $response->email;
-                $gotowebinar_licence->first_name = $response->firstName;
-                $gotowebinar_licence->last_name = $response->lastName;
-                $gotowebinar_licence->access_token = $response->access_token;
-                $gotowebinar_licence->refresh_token = $response->refresh_token;
-                $gotowebinar_licence->token_type = $response->token_type;
-                $gotowebinar_licence->expires_in = $response->expires_in;
-                $gotowebinar_licence->account_key = $response->account_key;
-                $gotowebinar_licence->organizer_key = $response->organizer_key;
-                $gotowebinar_licence->timecreated = time();
-                $gotowebinar_licence->timemodified = time();
-                $gotowebinar_licence->access_token_time = time();
-                $DB->insert_record('gotowebinar_licence', $gotowebinar_licence);
+            if (!$gotowebinarlicence) {
+                $gotowebinarlicence = new \stdClass();
+                $gotowebinarlicence->email = $response->email;
+                $gotowebinarlicence->first_name = $response->firstName;
+                $gotowebinarlicence->last_name = $response->lastName;
+                $gotowebinarlicence->access_token = $response->access_token;
+                $gotowebinarlicence->refresh_token = $response->refresh_token;
+                $gotowebinarlicence->token_type = $response->token_type;
+                $gotowebinarlicence->expires_in = $response->expires_in;
+                $gotowebinarlicence->account_key = $response->account_key;
+                $gotowebinarlicence->organizer_key = $response->organizer_key;
+                $gotowebinarlicence->timecreated = time();
+                $gotowebinarlicence->timemodified = time();
+                $gotowebinarlicence->access_token_time = time();
+                $DB->insert_record('gotowebinar_licence', $gotowebinarlicence);
             } else {
-                $gotowebinar_licence->access_token = $response->access_token;
-                $gotowebinar_licence->refresh_token = $response->refresh_token;
-                $gotowebinar_licence->timemodified = time();
-                $gotowebinar_licence->access_token_time = time();
+                $gotowebinarlicence->access_token = $response->access_token;
+                $gotowebinarlicence->refresh_token = $response->refresh_token;
+                $gotowebinarlicence->timemodified = time();
+                $gotowebinarlicence->access_token_time = time();
 
-                $DB->update_record('gotowebinar_licence', $gotowebinar_licence);
+                $DB->update_record('gotowebinar_licence', $gotowebinarlicence);
             }
 
             return true;

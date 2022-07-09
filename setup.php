@@ -31,16 +31,18 @@ $PAGE->set_title('GoToMeeting config test report');
 require_login();
 
 if (!is_siteadmin()) {
-    print_error('nopermissions', 'gotowebinar', '', null);
+    throw new moodle_exception('nopermissions', 'gotowebinar', '', null);
 }
 
 $gotowebinarconfig = get_config('gotowebinar');
-$goToAuth = new mod_gotowebinar\GoToOAuth();
+$gotoauth = new mod_gotowebinar\GoToOAuth();
 
-if (isset($gotowebinarconfig->consumer_key) && $gotowebinarconfig->consumer_key != '' && isset($gotowebinarconfig->consumer_secret) && $gotowebinarconfig->consumer_secret != '') {
+if (isset($gotowebinarconfig->consumer_key) && $gotowebinarconfig->consumer_key != '' &&
+        isset($gotowebinarconfig->consumer_secret) && $gotowebinarconfig->consumer_secret != '') {
 
-    $redirect_url = $CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php';
-    $url = mod_gotowebinar\GoToOAuth::BASE_URL . "/oauth/v2/authorize?client_id=$gotowebinarconfig->consumer_key&response_type=code&redirect_uri=$redirect_url";
+    $redirecturl = $CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php';
+    $url = mod_gotowebinar\GoToOAuth::BASE_URL . "/oauth/v2/authorize?client_id="
+            . "$gotowebinarconfig->consumer_key&response_type=code&redirect_uri=$redirecturl";
 
     redirect($url);
 } else {
@@ -49,7 +51,7 @@ if (isset($gotowebinarconfig->consumer_key) && $gotowebinarconfig->consumer_key 
 
     echo html_writer::div('GoToMeeting config validation ', 'alert alert-info');
 
-    $consumerKey = trim($gotowebinarconfig->consumer_key);
+    $consumerey = trim($gotowebinarconfig->consumer_key);
     if (isset($gotowebinarconfig->consumer_key) && $gotowebinarconfig->consumer_key == '') {
 
 

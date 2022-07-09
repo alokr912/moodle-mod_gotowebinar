@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,7 +31,6 @@ $id = required_param('id', PARAM_INT); // Course Module ID.
 if ($id) {
     if (!$cm = get_coursemodule_from_id('gotowebinar', $id)) {
         throw new moodle_error('invalidcoursemodule');
-       
     }
     $gotowebinar = $DB->get_record('gotowebinar', array('id' => $cm->instance), '*', MUST_EXIST);
 }
@@ -49,8 +49,7 @@ require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/gotowebinar:view', $context);
 
-
- $access_code = $audio_info['attendee_accesscode'];
+$access_code = $audio_info['attendee_accesscode'];
 $PAGE->set_url('/mod/gotowebinar/view.php', array('id' => $cm->id));
 $PAGE->set_title($course->shortname . ': ' . $gotowebinar->name);
 $PAGE->set_heading($course->fullname);

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -21,8 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once $CFG->dirroot . '/calendar/lib.php';
-require_once ('locallib.php');
+
+require_once($CFG->dirroot . '/calendar/lib.php');
+require_once('locallib.php');
 
 function gotowebinar_get_coursemodule_info($coursemodule) {
     global $DB;
@@ -48,12 +50,12 @@ function gotowebinar_add_instance($data, $mform = null) {
         $data->timemodified = time();
 
         $data->webinarkey = $response;
-      
+
         $data->id = $DB->insert_record('gotowebinar', $data);
     }
 
     if (!empty($data->id)) {
-        // Add event to calendar
+        // Add event to calendar.
         $event = new stdClass();
         $event->name = $data->name;
         $event->description = $data->intro;
@@ -77,7 +79,7 @@ function gotowebinar_add_instance($data, $mform = null) {
 
         return $data->id;
     }
-    return FALSE;
+    return false;
 }
 
 /**
@@ -131,7 +133,7 @@ function gotowebinar_update_instance($gotowebinar) {
         return false;
     }
     $result = updateGoToWebinar($oldgotowebinar, $gotowebinar);
-    // $oldgotowebinar->meetingtype is always empty, set it up like this or add an invisible option to the mod_form
+    // Variable $oldgotowebinar->meetingtype is always empty, set it up like this or add an invisible option to the mod_form.
     if ($result) {
 
         $oldgotowebinar->name = $gotowebinar->name;
@@ -191,17 +193,17 @@ function gotowebinar_delete_instance($id) {
     global $DB, $CFG;
 
     if (!$gotowebinar = $DB->get_record('gotowebinar', array('id' => $id))) {
-        var_dump("aa");
+
         return false;
     }
 
     if (!$cm = get_coursemodule_from_instance('gotowebinar', $id)) {
-         var_dump("bb");
+
         return false;
     }
     $context = context_module::instance($cm->id);
-    if(deleteGoToWebinar($gotowebinar->webinarkey, $gotowebinar->gotowebinar_licence)){
-         var_dump("cc");
+    if (deleteGoToWebinar($gotowebinar->webinarkey, $gotowebinar->gotowebinar_licence)) {
+
         return true;
     }
 
@@ -216,7 +218,7 @@ function gotowebinar_delete_instance($id) {
 
 function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
     global $CFG, $DB;
-    require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
+    require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotoOAuth.php');
 
     $completion = new completion_info($course);
     $gotowebinar = $DB->get_record('gotowebinar', array('id' => $cm->instance));

@@ -22,7 +22,7 @@
  */
 
 namespace mod_gotowebinar\event;
-defined('MOODLE_INTERNAL') || die();
+
 
 
 class gotowebinar_viewed extends \core\event\base {
