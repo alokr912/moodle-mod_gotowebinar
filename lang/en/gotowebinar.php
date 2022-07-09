@@ -56,7 +56,7 @@ $string['meetingenddateandtime'] = 'Meeting end date and time';
 $string['joinmeeting'] = 'Join Meeting';
 $string['meetingrecording'] = 'Meeting Recording';
 $string['downloadurl'] = 'Download Link';
-$string['setup']='Setup GoToWebinar';
+$string['setup']='Add new GoToWebinar license';
 $string['completiongotowebinargroup']='Require to attend ';
 $string['completiongotowebinargroup_help']='Require to attend GoToWebinar';
 $string['completiongotowebinar']='Student must attent this activity minimum percentage to complete it ';
@@ -77,5 +77,16 @@ $string['licencerequired']= 'GoWebinar Licence required.';
 $string['webinarid'] = 'Webinar ID';
 $string['accountname'] = 'Account name';
 $string['crontask'] = 'GoToWebinar Cron Task';
+$string['license_disabled'] = 'You have sucessfully disabled the GoToWebinar license: {$a}';
+$string['license_enabled'] = 'You have sucessfully enabled the GoToWeninar license: {$a}';
+$string['license_heading'] = 'GoToWebinar License';
+$string['license_title'] = 'GoToWebinar License';
+$string['license_added_successfully'] = 'GoToWebinar license added  successfully';
+$string['license_added_failure'] = 'Unable to add GoToWebinar license';
+$string['oauth_status_heading'] = 'GoToWebinar license status';
+$string['oauth_status_title'] = 'GoToWebinar license status';
+
+
+
 
 

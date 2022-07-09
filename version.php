@@ -28,3 +28,4 @@ $plugin->component = 'mod_gotowebinar';   // Full name of the plugin (used for d
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = 'v2.7-1';
 
+

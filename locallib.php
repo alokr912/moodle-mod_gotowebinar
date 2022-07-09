@@ -70,6 +70,7 @@ function createGoToWebibnar($gotowebinar) {
     } else {
         $emailSettings['attendeeFollowUpEmail'] = array('enabled' => false);
     }
+   
     $attributes['emailSettings'] = $emailSettings;
 
     $key = $goToOauth->organizerkey;
@@ -126,12 +127,14 @@ function updateGoToWebinar($oldgotowebinar, $gotowebinar) {
     } else {
         $emailSettings['attendeeFollowUpEmail'] = array('enabled' => false);
     }
+   
     $attributes['emailSettings'] = $emailSettings;
 
     $key = $goToOauth->organizerkey;
 
     $response = $goToOauth->put("/G2W/rest/v2/organizers/{$key}/webinars/{$oldgotowebinar->webinarkey}", $attributes);
     if ($response) {
+        
         return true;
     }
     return false;
