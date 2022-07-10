@@ -24,7 +24,6 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
-    require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotoOAuth.php');
 
     $name = 'gotowebinar/consumer_key';
     $visiblename = get_string('gtw_consumer_key', 'gotowebinar');
@@ -71,20 +70,5 @@ if ($ADMIN->fulltree) {
     $actionshtml .= html_writer::end_div();
     $actionshtml .= html_writer::end_div();
     $settings->add(new admin_setting_heading('gotowebinar_license', '', $actionshtml));
-
-    $goto = new mod_gotowebinar\GoToOAuth();
-
-    $status = $goto->getSetupStatus();
-
-    if ($status) {
-        $statushtml = html_writer::div('GoToWebinar setup status is complete', 'alert alert-success');
-        $a = '';
-        $settings->add(new admin_setting_heading('gotowebinar_setup_status', '', $a));
-    }
-    $url = $CFG->wwwroot . '/mod/gotowebinar/setup.php';
-    $url = htmlentities($url, ENT_COMPAT, 'UTF-8');
-    $options = 'toolbar = 0, scrollbars = 1, location = 0, statusbar = 0, menubar = 0, resizable = 0, width = 700, height = 300';
-    $str = '<center><input type = "button" onclick = "window.open(\'' . $url . '\', \'\', \'' . $options . '\');" value = "' .
-            get_string('setup', 'gotowebinar') . '" /></center>';
 }
 

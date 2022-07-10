@@ -60,7 +60,6 @@ $string['setup'] = 'Add new GoToWebinar license';
 $string['completiongotowebinargroup'] = 'Require to attend ';
 $string['completiongotowebinargroup_help'] = 'Require to attend GoToWebinar';
 $string['completiongotowebinar'] = 'Student must attent this activity minimum percentage to complete it ';
-
 $string['completiongotowebinar'] = 'Setup GoToWebinar';
 $string['confirmationemail'] = 'Send Confirmation email';
 $string['reminderemail'] = 'Send reminder email';
@@ -89,6 +88,7 @@ $string['gotowebinar:addinstance'] = 'Add a GoToWebinar instance';
 $string['gotowebinar:view'] = 'View GoToWebinar activity';
 $string['gotowebinar:presenter'] = 'Join as GoToWebinar presenter';
 $string['gotowebinar:organiser'] = 'Join as GoToWebinar organiser';
-$string[''] = '';
-$string[''] = '';
+$string['secretmissing'] = 'GoToMeeting consumer secert missing';
+$string['keymissing'] = 'GoToMeeting consumer key missing';
+$string['worongaction'] = 'Invalid action';
 

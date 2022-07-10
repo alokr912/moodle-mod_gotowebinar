@@ -23,6 +23,13 @@
 
 namespace mod_gotowebinar;
 
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->libdir . '/filelib.php');
+
+
+
+use curl;
+
 class GotoOAuth {
 
     public const BASE_URL = "https://api.getgo.com";
@@ -41,25 +48,11 @@ class GotoOAuth {
     private $accesstokentime;
     private $consumerkey;
     private $consumersecret;
-
-    public function __construct($licenceid = null) {
-        global $DB;
-
-        $licence = $DB->get_record('gotowebinar_licence', array('id' => $licenceid));
-
-        if ($licence) {
-            $this->organizerkey = !empty($licence->organizer_key) ? $licence->organizer_key : null;
-            $this->refreshtoken = !empty($licence->refresh_token) ? $licence->refresh_token : null;
-            $this->accesstoken = !empty($licence->access_token) ? $licence->access_token : null;
-            $this->accesstokentime = !empty($licence->access_token_time) ? $licence->access_token_time : null;
-        }
-    }
+    private $curl;
 
     public function getaccesstokenwithcode($code) {
-        global $CFG, $DB;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::BASE_URL . "/oauth/v2/token");
-        curl_setopt($ch, CURLOPT_POST, true);
+        global $CFG;
+
         $pluginconfig = get_config(self::PLUGIN_NAME);
         $authorization = base64_encode($pluginconfig->consumer_key . ":" . $pluginconfig->consumer_secret);
         $headers = [
@@ -67,43 +60,28 @@ class GotoOAuth {
             'Accept:application/json',
             'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
         ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $this->curl->setHeader($headers);
 
-        $redirecturl = $CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php';
+        $redirecturl = $CFG->wwwroot . '/mod/gotomeeting/oauthCallback.php';
         $data = ['redirect_uri' => $redirecturl, 'grant_type' => 'authorization_code', 'code' => $code];
-        curl_setopt($ch, CURLOPT_POSTFIELDS, self::encode_attributes($data));
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        $serveroutput = curl_exec($ch);
-
-        curl_close($ch);
+        $serveroutput = $this->curl->post(self::BASE_URL . '/oauth/v2/token', self::encode_attributes($data));
 
         $response = json_decode($serveroutput);
         return $this->update_access_token($response);
     }
 
     public function getaccesstokenwithrefreshtoken($refreshtoken) {
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::BASE_URL . "/oauth/v2/token");
-        curl_setopt($ch, CURLOPT_POST, true);
         $gotowebinarconfig = get_config(self::PLUGIN_NAME);
 
         $headers = [
             'Authorization: Basic ' . base64_encode($gotowebinarconfig->consumer_key . ":" . $gotowebinarconfig->consumer_secret),
             'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
         ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
+        $this->curl->setHeader($headers);
         $data = ['grant_type' => 'refresh_token', 'refresh_token' => $refreshtoken];
-        curl_setopt($ch, CURLOPT_POSTFIELDS, self::encode_attributes($data));
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $serveroutput = curl_exec($ch);
-        curl_close($ch);
+        $serveroutput = $this->curl->post(self::BASE_URL . '/oauth/v2/token', self::encode_attributes($data));
 
         $response = json_decode($serveroutput);
 
@@ -122,8 +100,8 @@ class GotoOAuth {
 
     public function getaccesstoken() {
 
-        if (isset($this->access_token_time) && !empty($this->access_token_time) &&
-                $this->access_token_time + self::EXPIRY_TIME_IN_SECOND > time()) {
+        if (isset($this->accesstokentime) && !empty($this->accesstokentime) &&
+                $this->accesstokentime + self::EXPIRY_TIME_IN_SECOND > time()) {
             return $this->accesstoken;
         } else {
             return $this->getaccesstokenwithrefreshtoken($this->refreshtoken);
@@ -132,118 +110,72 @@ class GotoOAuth {
 
     public function post($endpoint, $data) {
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::BASE_URL . $endpoint);
-        curl_setopt($ch, CURLOPT_POST, true);
-
         $headers = [
             'Authorization: Bearer ' . $this->getAccessToken()
         ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        $this->curl->setHeader($headers);
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $serveroutput = curl_exec($ch);
-
-        curl_close($ch);
+        $serveroutput = $this->curl->post(self::BASE_URL . $endpoint, json_encode($data));
 
         return json_decode($serveroutput);
     }
 
     public function put($endpoint, $data) {
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::BASE_URL . $endpoint);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-
         $headers = [
             'Authorization: Bearer ' . $this->getAccessToken()
         ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $this->curl->setHeader($headers);
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $serveroutput = curl_exec($ch);
-
-        curl_close($ch);
+        $serveroutput = $this->curl->put(self::BASE_URL . $endpoint, json_encode($data));
 
         $result = json_decode($serveroutput);
         return true;
     }
 
     public function get($endpoint) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::BASE_URL . $endpoint);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
 
         $headers = [
             'Authorization: Bearer ' . $this->getAccessToken()
         ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $this->curl->setHeader($headers);
 
-        $serveroutput = curl_exec($ch);
-
-        curl_close($ch);
+        $serveroutput = $this->curl->get(self::BASE_URL . $endpoint);
 
         return json_decode($serveroutput);
     }
 
     public function delete($endpoint, $data = null) {
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::BASE_URL . $endpoint);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-
         $headers = [
             'Authorization: Bearer ' . $this->getAccessToken()
         ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        if ($data) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        $this->curl->setHeader($headers);
+
+        $serveroutput = $this->curl->delete(self::BASE_URL . $endpoint, json_encode($data));
+
+        if (empty($serveroutput)) {
+            return true;
         }
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $serveroutput = curl_exec($ch);
-
-        curl_close($ch);
-
-        $result = json_decode($serveroutput);
+        return false;
     }
 
     public function getsetupstatus() {
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::BASE_URL . "/oauth/v2/token");
-        curl_setopt($ch, CURLOPT_POST, true);
         $gotowebinarconfig = get_config(self::PLUGIN_NAME);
 
         $headers = [
             'Authorization: Basic ' . base64_encode($gotowebinarconfig->consumer_key . ":" . $gotowebinarconfig->consumer_secret),
             'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
         ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $this->curl->setHeader($headers);
 
         $data = ['grant_type' => 'refresh_token', 'refresh_token' => $this->refreshtoken];
-        curl_setopt($ch, CURLOPT_POSTFIELDS, self::encode_attributes($data));
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $serveroutput = $this->curl->post(self::BASE_URL . "/oauth/v2/token", self::encode_attributes($data));
 
-        $serveroutput = curl_exec($ch);
-        $chinfo = curl_getinfo($ch);
-        curl_close($ch);
-
-        if ($chinfo['http_code'] === 200) {
-
-            return json_decode($serveroutput);
-        }
-
-        return false;
+        return json_decode($serveroutput);
     }
 
     public static function encode_attributes($attributes) {

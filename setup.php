@@ -21,21 +21,16 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once('../../config.php');
-require_once('./classes/gotooauth.class.php');
+require_once('./classes/gotooauth.php');
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotowebinar/setup.php'));
 $PAGE->set_pagelayout('admin');
-$PAGE->set_heading('GoToMeeting config test report');
-$PAGE->set_title('GoToMeeting config test report');
-require_login();
-
-if (!is_siteadmin()) {
-    throw new moodle_exception('nopermissions', 'gotowebinar', '', null);
-}
+$PAGE->set_heading(get_string('setup', 'gotowebinar'));
+$PAGE->set_title(get_string('setup', 'gotowebinar'));
+require_admin();
 
 $gotowebinarconfig = get_config('gotowebinar');
-$gotoauth = new mod_gotowebinar\GoToOAuth();
 
 if (isset($gotowebinarconfig->consumer_key) && $gotowebinarconfig->consumer_key != '' &&
         isset($gotowebinarconfig->consumer_secret) && $gotowebinarconfig->consumer_secret != '') {
@@ -48,17 +43,14 @@ if (isset($gotowebinarconfig->consumer_key) && $gotowebinarconfig->consumer_key 
 } else {
 
     echo $OUTPUT->header();
+    echo html_writer::div(get_string('setup', 'gotowebinar'), 'alert alert-info');
 
-    echo html_writer::div('GoToMeeting config validation ', 'alert alert-info');
-
-    $consumerey = trim($gotowebinarconfig->consumer_key);
     if (isset($gotowebinarconfig->consumer_key) && $gotowebinarconfig->consumer_key == '') {
-
-
-        echo html_writer::div('GoToMeeting consumer key missing', 'alert alert-danger');
+        echo html_writer::div(get_string('keymissing', 'gotowebinar'), 'alert alert-danger');
     }
     if (isset($gotowebinarconfig->consumer_secret) && $gotowebinarconfig->consumer_secret == '') {
 
-        echo html_writer::div('GoToMeeting consumer secert missing', 'alert alert-danger');
+        echo html_writer::div(get_string('secretmissing', 'gotowebinar'), 'alert alert-danger');
     }
+    echo $OUTPUT->footer();
 }

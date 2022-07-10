@@ -19,7 +19,7 @@
  * and open the template in the editor.
  */
 require_once('../../config.php');
-require_once('./classes/gotoOAuth.php');
+require_once('./classes/gotooauth.php');
 $code = required_param('code', PARAM_RAW);
 require_admin();
 
@@ -29,18 +29,18 @@ $result = $gotooauth->getAccessTokenWithCode($code);
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php', array('code' => $code)));
 $PAGE->set_pagelayout('admin');
-$PAGE->set_heading(get_string('oauth_status_heading', 'mod_gotowebinar'));
-$PAGE->set_title(get_string('oauth_status_title', 'mod_gotowebinar'));
+$PAGE->set_heading(get_string('oauth_status_heading', 'gotowebinar'));
+$PAGE->set_title(get_string('oauth_status_title', 'gotowebinar'));
 echo $OUTPUT->header();
 $link = new moodle_url('/admin/settings.php', array('section' => 'modsettinggotowebinar'));
 if ($result) {
 
-    $successmessage = get_string('license_added_successfully', 'mod_gotowebinar');
+    $successmessage = get_string('license_added_successfully', 'gotowebinar');
 
     notice($successmessage, $link);
 } else {
 
-    $failuremessage = get_string('license_added_failure', 'mod_gotowebinar');
+    $failuremessage = get_string('license_added_failure', 'gotowebinar');
     notice($failuremessage, $link);
 }
 

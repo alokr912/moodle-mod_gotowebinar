@@ -22,7 +22,7 @@
  */
 require('../../config.php');
 require_once($CFG->dirroot . '/mod/gotowebinar/locallib.php');
-require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php');
+require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.php');
 require_once($CFG->libdir . '/completionlib.php');
 global $DB, $USER;
 
@@ -34,6 +34,7 @@ require_admin();
 $gotowebinarlicence = $DB->get_record('gotowebinar_licence', array('id' => $id), '*', MUST_EXIST);
 $enabled = false;
 $disabled = false;
+$settingslink = $CFG->wwwroot . '/admin/settings.php?section=modsettinggotowebinar';
 if ($action == 'disable' && confirm_sesskey($sesskey)) {
 
     if ($gotowebinarlicence && $gotowebinarlicence->active) {
@@ -43,7 +44,7 @@ if ($action == 'disable' && confirm_sesskey($sesskey)) {
             $disabled = true;
         }
     } else {
-        throw new moodle_error('invalidcoursemodule');
+        throw new moodle_exception('worongaction', 'gotowebinar', $settingslink);
     }
 } else if ($action == 'enable' && confirm_sesskey($sesskey)) {
     if ($gotowebinarlicence && $gotowebinarlicence->active == 0) {
@@ -53,24 +54,20 @@ if ($action == 'disable' && confirm_sesskey($sesskey)) {
             $enabled = true;
         }
     } else {
-        throw new moodle_error('worongaction', 'gotowebinar');
+        throw new moodle_exception('worongaction', 'gotowebinar', $settingslink);
     }
 }
 
-
-
-
-
-
+$PAGE->set_context(context_system::instance());
 $PAGE->set_url('/mod/gotowebinar/license.php', array('id' => $id, 'action' => $action));
 $PAGE->set_title(get_string('license_title', 'mod_gotowebinar'));
 $PAGE->set_heading(get_string('license_heading', 'mod_gotowebinar'));
 echo $OUTPUT->header();
-$link = $CFG->wwwroot . '/admin/settings.php?section=modsettinggotowebinar';
+
 if ($enabled) {
-    notice(get_string('license_enabled', 'mod_gotowebinar', $gotowebinarlicence->email), $link);
+    notice(get_string('license_enabled', 'mod_gotowebinar', $gotowebinarlicence->email), $settingslink);
 } else if ($disabled) {
-    notice(get_string('license_disabled', 'mod_gotowebinar', $gotowebinarlicence->email), $link);
+    notice(get_string('license_disabled', 'mod_gotowebinar', $gotowebinarlicence->email), $settingslink);
 }
 
 
