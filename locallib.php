@@ -1,5 +1,18 @@
 <?php
-
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
  * GoToWebinar module local library file
  *
@@ -9,16 +22,15 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
-require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
+require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.php');
 require_once($CFG->dirroot . '/lib/completionlib.php');
 
-function createGoToWebibnar($gotowebinar) {
-    global $USER, $DB, $CFG;
-    require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
-    $goToOauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
+function creategotowebibnar($gotowebinar) {
 
-    if (!isset($goToOauth->organizerkey) || empty($goToOauth->organizerkey)) {
-        print_error("Incomplete GoToWebinar setup");
+    $gotooauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
+
+    if (!isset($gotooauth->organizerkey) || empty($gotooauth->organizerkey)) {
+        throw new moodle_exception('incompletesetup', 'gotowebinar');
     }
 
     $attributes = array();
@@ -28,41 +40,43 @@ function createGoToWebibnar($gotowebinar) {
 
     $startdate = usergetdate(usertime($gotowebinar->startdatetime - $dstoffset));
     $timearray = array();
-    $timearray['startTime'] = $startdate['year'] . '-' . $startdate['mon'] . '-' . $startdate['mday'] . 'T' . $startdate['hours'] . ':' . $startdate['minutes'] . ':' . $startdate['seconds'] . 'Z';
+    $timearray['startTime'] = $startdate['year'] . '-' . $startdate['mon'] . '-' . $startdate['mday'] . 'T' .
+            $startdate['hours'] . ':' . $startdate['minutes'] . ':' . $startdate['seconds'] . 'Z';
     $endtdate = usergetdate(usertime($gotowebinar->enddatetime - $dstoffset));
-    $timearray['endTime'] = $endtdate['year'] . '-' . $endtdate['mon'] . '-' . $endtdate['mday'] . 'T' . $endtdate['hours'] . ':' . $endtdate['minutes'] . ':' . $endtdate['seconds'] . 'Z';
+    $timearray['endTime'] = $endtdate['year'] . '-' . $endtdate['mon'] . '-' . $endtdate['mday'] . 'T' .
+            $endtdate['hours'] . ':' . $endtdate['minutes'] . ':' . $endtdate['seconds'] . 'Z';
     $attributes['times'] = array($timearray);
     $attributes['timeZone'] = get_user_timezone();
     $attributes['type'] = 'single_session';
     $attributes['isPasswordProtected'] = 'false';
 
-    $emailSettings = array();
+    $emailsettings = array();
     if (!empty($gotowebinar->confirmationemail)) {
-        $emailSettings['confirmationEmail'] = array('enabled' => true);
+        $emailsettings['confirmationEmail'] = array('enabled' => true);
     } else {
-        $emailSettings['confirmationEmail'] = array('enabled' => false);
+        $emailsettings['confirmationEmail'] = array('enabled' => false);
     }
     if (!empty($gotowebinar->reminderemail)) {
-        $emailSettings['reminderEmail'] = array('enabled' => true);
+        $emailsettings['reminderEmail'] = array('enabled' => true);
     } else {
-        $emailSettings['reminderEmail'] = array('enabled' => false);
+        $emailsettings['reminderEmail'] = array('enabled' => false);
     }
     if (!empty($gotowebinar->absenteefollowupemail)) {
-        $emailSettings['absenteeFollowUpEmail'] = array('enabled' => true);
+        $emailsettings['absenteeFollowUpEmail'] = array('enabled' => true);
     } else {
-        $emailSettings['absenteeFollowUpEmail'] = array('enabled' => false);
+        $emailsettings['absenteeFollowUpEmail'] = array('enabled' => false);
     }
     if (!empty($gotowebinar->attendeefollowupemail)) {
-        $emailSettings['attendeeFollowUpEmail'] = array('enabled' => true, 'includeCertificate' => true);
+        $emailsettings['attendeeFollowUpEmail'] = array('enabled' => true, 'includeCertificate' => true);
     } else {
-        $emailSettings['attendeeFollowUpEmail'] = array('enabled' => false);
+        $emailsettings['attendeeFollowUpEmail'] = array('enabled' => false);
     }
-   
-    $attributes['emailSettings'] = $emailSettings;
 
-    $key = $goToOauth->organizerkey;
+    $attributes['emailSettings'] = $emailsettings;
 
-    $response = $goToOauth->post("/G2W/rest/v2/organizers/{$key}/webinars", $attributes);
+    $key = $gotooauth->organizerkey;
+
+    $response = $gotooauth->post("/G2W/rest/v2/organizers/{$key}/webinars", $attributes);
 
     if ($response && !empty($response->webinarKey)) {
         return $response->webinarKey;
@@ -70,13 +84,11 @@ function createGoToWebibnar($gotowebinar) {
     return false;
 }
 
-function updateGoToWebinar($oldgotowebinar, $gotowebinar) {
-    global $USER, $DB, $CFG;
-    require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
+function updategotowebinar($oldgotowebinar, $gotowebinar) {
 
-    $goToOauth = new mod_gotowebinar\GoToOAuth($oldgotowebinar->gotowebinar_licence);
-    if (!isset($goToOauth->organizerkey) || empty($goToOauth->organizerkey)) {
-        print_error("Incomplete GoToWebinar setup");
+    $gotooauth = new mod_gotowebinar\GoToOAuth($oldgotowebinar->gotowebinar_licence);
+    if (!isset($gotooauth->organizerkey) || empty($gotooauth->organizerkey)) {
+        throw new moodle_exception('incompletesetup', 'gotowebinar');
     }
 
     $attributes = array();
@@ -93,47 +105,47 @@ function updateGoToWebinar($oldgotowebinar, $gotowebinar) {
     $timearray['endTime'] = $endtdate['year'] . '-' . $endtdate['mon'] . '-' . $endtdate['mday'] . 'T' .
             $endtdate['hours'] . ':' . $endtdate['minutes'] . ':' . $endtdate['seconds'] . 'Z';
     $attributes['times'] = array($timearray);
-    $emailSettings = array();
+    $emailsettings = array();
     if (!empty($gotowebinar->confirmationemail)) {
-        $emailSettings['confirmationEmail'] = array('enabled' => true);
+        $emailsettings['confirmationEmail'] = array('enabled' => true);
     } else {
-        $emailSettings['confirmationEmail'] = array('enabled' => false);
+        $emailsettings['confirmationEmail'] = array('enabled' => false);
     }
     if (!empty($gotowebinar->reminderemail)) {
-        $emailSettings['reminderEmail'] = array('enabled' => true);
+        $emailsettings['reminderEmail'] = array('enabled' => true);
     } else {
-        $emailSettings['reminderEmail'] = array('enabled' => false);
+        $emailsettings['reminderEmail'] = array('enabled' => false);
     }
     if (!empty($gotowebinar->absenteefollowupemail)) {
-        $emailSettings['absenteeFollowUpEmail'] = array('enabled' => true);
+        $emailsettings['absenteeFollowUpEmail'] = array('enabled' => true);
     } else {
-        $emailSettings['absenteeFollowUpEmail'] = array('enabled' => false);
+        $emailsettings['absenteeFollowUpEmail'] = array('enabled' => false);
     }
     if (!empty($gotowebinar->attendeefollowupemail)) {
-        $emailSettings['attendeeFollowUpEmail'] = array('enabled' => true, 'includeCertificate' => true);
+        $emailsettings['attendeeFollowUpEmail'] = array('enabled' => true, 'includeCertificate' => true);
     } else {
-        $emailSettings['attendeeFollowUpEmail'] = array('enabled' => false);
+        $emailsettings['attendeeFollowUpEmail'] = array('enabled' => false);
     }
-   
-    $attributes['emailSettings'] = $emailSettings;
 
-    $key = $goToOauth->organizerkey;
+    $attributes['emailSettings'] = $emailsettings;
 
-    $response = $goToOauth->put("/G2W/rest/v2/organizers/{$key}/webinars/{$oldgotowebinar->webinarkey}", $attributes);
+    $key = $gotooauth->organizerkey;
+
+    $response = $gotooauth->put("/G2W/rest/v2/organizers/{$key}/webinars/{$oldgotowebinar->webinarkey}", $attributes);
     if ($response) {
-        
+
         return true;
     }
     return false;
 }
 
-function deleteGoToWebinar($gotoid, $licence) {
+function deletegotowebinar($gotoid, $licence) {
     global $CFG;
-    require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
-    $goToOauth = new mod_gotowebinar\GoToOAuth($licence);
 
-    $key = $goToOauth->organizerkey;
-    $responce = $goToOauth->delete("/G2W/rest/v2/organizers/{$key}/webinars/{$gotoid}", null);
+    $gotooauth = new mod_gotowebinar\GoToOAuth($licence);
+
+    $key = $gotooauth->organizerkey;
+    $responce = $gotooauth->delete("/G2W/rest/v2/organizers/{$key}/webinars/{$gotoid}", null);
 
     if ($responce) {
         return true;
@@ -143,16 +155,15 @@ function deleteGoToWebinar($gotoid, $licence) {
 }
 
 function get_gotowebinar($gotowebinar) {
-    global $USER, $DB, $CFG;
-    require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
+    global $USER, $DB;
 
-    $goToOauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
+    $gotooauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
 
     $context = context_course::instance($gotowebinar->course);
-    $organiser_key = $goToOauth->organizerkey;
+    $$organiserkey = $gotooauth->organizerkey;
 
     if (has_capability('mod/gotowebinar:organiser', $context) OR has_capability('mod/gotowebinar:presenter', $context)) {
-        $coorganisers = $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$gotowebinar->webinarkey}/coorganizers");
+        $coorganisers = $gotooauth->get("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$gotowebinar->webinarkey}/coorganizers");
 
         if ($coorganisers) {
 
@@ -161,20 +172,21 @@ function get_gotowebinar($gotowebinar) {
                     return $coorganiser->joinLink;
                 }
             }
-        } else {// No co organiser found , create one
-            $attributes = array(array('external' => true, 'organizerKey' => $organiser_key, 'givenName' => fullname($USER), 'email' => $USER->email));
-            $response = $goToOauth->post("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$gotowebinar->webinarkey}/coorganizers", $attributes);
+        } else {// No co organiser found , create one.
+            $attributes = array(array('external' => true, 'organizerKey' => $organiserkey, 'givenName' => fullname($USER),
+                    'email' => $USER->email));
+            $response = $gotooauth->post("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$gotowebinar->webinarkey}/coorganizers",
+                    $attributes);
 
             if ($response) {
-
-
 
                 return $response[0]->joinLink;
             }
         }
     }
-    // Now register and check registrant
-    $registrant = $DB->get_record('gotowebinar_registrant', array('userid' => $USER->id, 'gotowebinarid' => $gotowebinar->webinarkey));
+    // Now register and check registrant.
+    $registrant = $DB->get_record('gotowebinar_registrant',
+            array('userid' => $USER->id, 'gotowebinarid' => $gotowebinar->webinarkey));
 
     if ($registrant) {
         return $registrant->joinurl;
@@ -198,22 +210,21 @@ function get_gotowebinar($gotowebinar) {
         $attributes['purchasingTimeFrame'] = '';
         $attributes['purchasingRole'] = '';
         $attributes['responses'] = array(array('questionKey' => 0, 'responseText' => '', 'answerKey' => 0));
-        $response = $goToOauth->post("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$gotowebinar->webinarkey}/registrants", $attributes);
+        $response = $gotooauth->post("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$gotowebinar->webinarkey}/registrants",
+                $attributes);
 
         if (isset($response) && isset($response->registrantKey) && isset($response->joinUrl)) {
 
-
-
-            $gotowebinar_registrant = new stdClass();
-            $gotowebinar_registrant->course = $gotowebinar->course;
-            $gotowebinar_registrant->instanceid = '';
-            $gotowebinar_registrant->joinurl = $response->joinUrl;
-            $gotowebinar_registrant->registrantkey = $response->registrantKey;
-            $gotowebinar_registrant->userid = $USER->id;
-            $gotowebinar_registrant->gotowebinarid = $gotowebinar->webinarkey;
-            $gotowebinar_registrant->timecreated = time();
-            $gotowebinar_registrant->timemodified = time();
-            $gotowebinar_registrant->id = $DB->insert_record('gotowebinar_registrant', $gotowebinar_registrant);
+            $gotowebinarregistrant = new stdClass();
+            $gotowebinarregistrant->course = $gotowebinar->course;
+            $gotowebinarregistrant->instanceid = '';
+            $gotowebinarregistrant->joinurl = $response->joinUrl;
+            $gotowebinarregistrant->registrantkey = $response->registrantKey;
+            $gotowebinarregistrant->userid = $USER->id;
+            $gotowebinarregistrant->gotowebinarid = $gotowebinar->webinarkey;
+            $gotowebinarregistrant->timecreated = time();
+            $gotowebinarregistrant->timemodified = time();
+            $gotowebinarregistrant->id = $DB->insert_record('gotowebinar_registrant', $gotowebinarregistrant);
 
             return $response->joinUrl;
         }
@@ -222,42 +233,42 @@ function get_gotowebinar($gotowebinar) {
 
 function get_gotowebinarinfo($gotowebinar) {
 
-    $goToOauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
-    $organiser_key = $goToOauth->organizerkey;
-    return $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$gotowebinar->webinarkey}");
+    $gotooauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
+    $$organiserkey = $gotooauth->organizerkey;
+    return $gotooauth->get("/G2W/rest/v2/organizers/{$$organiserkey}/webinars/{$gotowebinar->webinarkey}");
 }
 
 function get_gotowebinar_attendance1() {
     global $USER, $DB, $CFG;
 
-    $goToOauth = new mod_gotowebinar\GoToOAuth();
+    $gotooauth = new mod_gotowebinar\GoToOAuth();
     $config = get_config(mod_gotowebinar\GoToOAuth::PLUGIN_NAME);
-    $organiser_key = $config->organizer_key;
-    $response = $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/3633309102739548429/attendees");
+    $organiserkey = $config->organizer_key;
+    $response = $gotooauth->get("/G2W/rest/v2/organizers/{$$organiserkey}/webinars/3633309102739548429/attendees");
     if (!empty($response) && !empty($response->_embedded) && !empty($response->_embedded->attendeeParticipationResponses)) {
         foreach ($response->_embedded->attendeeParticipationResponses as $at) {
-            print_object($at);
+            echo 'aaa';
         }
     }
 }
 
 function get_gotowebinar_audio_info($webinarkey, $license) {
-    global $CFG;
-    require_once $CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.class.php';
-    $goToOauth = new mod_gotowebinar\GoToOAuth($license);
 
-    $organiser_key = $goToOauth->organizerkey;
-    $audio_info = $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$webinarkey}/audio");
+    $gotooauth = new mod_gotowebinar\GoToOAuth($license);
 
-    if ($audio_info && $audio_info->confCallNumbers && $audio_info->confCallNumbers->IT->toll) {
-        $response['toll'] = $audio_info->confCallNumbers->IT->toll;
+    $$organiserkey = $gotooauth->organizerkey;
+    $audioinfo = $gotooauth->get("/G2W/rest/v2/organizers/{$$organiserkey}/webinars/{$webinarkey}/audio");
+
+    if ($audioinfo && $audioinfo->confCallNumbers && $audioinfo->confCallNumbers->IT->toll) {
+        $response['toll'] = $audioinfo->confCallNumbers->IT->toll;
     }
-    if ($audio_info && $audio_info->confCallNumbers && $audio_info->confCallNumbers->IT && $audio_info->confCallNumbers->IT->accessCodes && $audio_info->confCallNumbers->IT->accessCodes->organizer) {
-        $audio_info->confCallNumbers->IT->accessCodes->organizer;
+    if ($audioinfo && $audioinfo->confCallNumbers && $audioinfo->confCallNumbers->IT &&
+            $audioinfo->confCallNumbers->IT->accessCodes && $audioinfo->confCallNumbers->IT->accessCodes->organizer) {
+        $audioinfo->confCallNumbers->IT->accessCodes->organizer;
 
-        $response['organizer_accesscode'] = $audio_info->confCallNumbers->IT->accessCodes->organizer;
-        $response['attendee_accesscode'] = $audio_info->confCallNumbers->IT->accessCodes->attendee;
-        $response['panelist_accesscode'] = $audio_info->confCallNumbers->IT->accessCodes->panelist;
+        $response['organizer_accesscode'] = $audioinfo->confCallNumbers->IT->accessCodes->organizer;
+        $response['attendee_accesscode'] = $audioinfo->confCallNumbers->IT->accessCodes->attendee;
+        $response['panelist_accesscode'] = $audioinfo->confCallNumbers->IT->accessCodes->panelist;
     }
 
     return $response;
@@ -265,7 +276,7 @@ function get_gotowebinar_audio_info($webinarkey, $license) {
 
 function sync_gotowebinar_completion_status() {
     global $DB;
-    $start_time = time();
+    $starttime = time();
     $enddatetime1 = $enddatetime2 = time() - 15 * 60;
     $filter = array('enddatetime1' => $enddatetime1, 'enddatetime2' => $enddatetime2);
     $sql = "SELECT * FROM {gotowebinar}  enddatetime>=:enddatetime1 and enddatetime<=:enddatetime2 ";
@@ -273,10 +284,6 @@ function sync_gotowebinar_completion_status() {
     foreach ($webinars as $webinar) {
         get_gotowebinar_attendance();
     }
-}
-
-function sync_gotowebinar_registration() {
-    
 }
 
 function get_gotowebinar_attendance() {
@@ -294,20 +301,21 @@ function get_gotowebinar_attendance() {
             continue;
         }
 
-        $required_duration = (($gotowebinar->enddatetime - $gotowebinar->startdatetime) * $gotowebinar->completionparticipation) / 100;
+        $requiredduration = (($gotowebinar->enddatetime - $gotowebinar->startdatetime) *
+                $gotowebinar->completionparticipation) / 100;
 
-        $goToOauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
-        $organiser_key = $goToOauth->organizerkey;
+        $gotooauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
+        $organiserkey = $gotooauth->organizerkey;
         $webinarkey = $gotowebinar->webinarkey;
-        $response = $goToOauth->get("/G2W/rest/v2/organizers/{$organiser_key}/webinars/{$webinarkey}/attendees");
+        $response = $gotooauth->get("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$webinarkey}/attendees");
         foreach ($response->_embedded->attendeeParticipationResponses as $at) {
 
-            $gotowebinar_registrant = $DB->get_record('gotowebinar_registrant', array('registrantkey' => $at->registrantKey));
+            $gotowebinarregistrant = $DB->get_record('gotowebinar_registrant', array('registrantkey' => $at->registrantKey));
 
-            if ($gotowebinar_registrant && $required_duration <= $at->attendanceTimeInSeconds) {
-                echo "Marking completion for ==>$gotowebinar_registrant->userid in CMID==>$cm->id";
-               
-                $completion->update_state($cm, COMPLETION_COMPLETE, $gotowebinar_registrant->userid);
+            if ($gotowebinarregistrant && $requiredduration <= $at->attendanceTimeInSeconds) {
+                echo "Marking completion for ==>$gotowebinarregistrant->userid in CMID==>$cm->id";
+
+                $completion->update_state($cm, COMPLETION_COMPLETE, $gotowebinarregistrant->userid);
             }
         }
     }

@@ -1,5 +1,18 @@
 <?php
-
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Strings for component 'GoToWebinar', language 'en',
@@ -43,24 +56,23 @@ $string['meetingenddateandtime'] = 'Meeting end date and time';
 $string['joinmeeting'] = 'Join Meeting';
 $string['meetingrecording'] = 'Meeting Recording';
 $string['downloadurl'] = 'Download Link';
-$string['setup']='Add new GoToWebinar license';
-$string['completiongotowebinargroup']='Require to attend ';
-$string['completiongotowebinargroup_help']='Require to attend GoToWebinar';
-$string['completiongotowebinar']='Student must attent this activity minimum percentage to complete it ';
-
-$string['completiongotowebinar']='Setup GoToWebinar';
-$string['confirmationemail']= 'Send Confirmation email';
-$string['reminderemail']= 'Send reminder email';
-$string['absenteefollowupemail']= 'Send absentee follow-up email';
-$string['attendeefollowupemail']= 'Send attendee follow-up email';
-$string['sendcancellationemails']= 'Send cancellation email';
+$string['setup'] = 'Add new GoToWebinar license';
+$string['completiongotowebinargroup'] = 'Require to attend ';
+$string['completiongotowebinargroup_help'] = 'Require to attend GoToWebinar';
+$string['completiongotowebinar'] = 'Student must attent this activity minimum percentage to complete it ';
+$string['completiongotowebinar'] = 'Setup GoToWebinar';
+$string['confirmationemail'] = 'Send Confirmation email';
+$string['reminderemail'] = 'Send reminder email';
+$string['absenteefollowupemail'] = 'Send absentee follow-up email';
+$string['attendeefollowupemail'] = 'Send attendee follow-up email';
+$string['sendcancellationemails'] = 'Send cancellation email';
 $string['webinarkey'] = 'Webinar key';
 $string['toll'] = 'Toll No';
 $string['accesscode'] = 'Access code';
 $string['incompletesetup'] = 'GoTowebinar setup is incomplete, contact your site administrator to configure it.';
 $string['addlicence'] = 'Add new licence';
 $string['licence'] = 'Licence';
-$string['licencerequired']= 'GoWebinar Licence required.';
+$string['licencerequired'] = 'GoWebinar Licence required.';
 $string['webinarid'] = 'Webinar ID';
 $string['accountname'] = 'Account name';
 $string['crontask'] = 'GoToWebinar Cron Task';
@@ -72,8 +84,11 @@ $string['license_added_successfully'] = 'GoToWebinar license added  successfully
 $string['license_added_failure'] = 'Unable to add GoToWebinar license';
 $string['oauth_status_heading'] = 'GoToWebinar license status';
 $string['oauth_status_title'] = 'GoToWebinar license status';
-
-
-
-
+$string['gotowebinar:addinstance'] = 'Add a GoToWebinar instance';
+$string['gotowebinar:view'] = 'View GoToWebinar activity';
+$string['gotowebinar:presenter'] = 'Join as GoToWebinar presenter';
+$string['gotowebinar:organiser'] = 'Join as GoToWebinar organiser';
+$string['secretmissing'] = 'GoToMeeting consumer secert missing';
+$string['keymissing'] = 'GoToMeeting consumer key missing';
+$string['worongaction'] = 'Invalid action';
 

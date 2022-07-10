@@ -90,7 +90,7 @@
                 <FIELD NAME="access_token_time" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="account_key" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" />
                 <FIELD NAME="organizer_key" TYPE="char" LENGTH="100" NOTNULL="true"  DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" ENUM="false" COMMENT="Meetings can be public or non-public" PREVIOUS="completiongotomeeting" NEXT="timecreated"/>
+                <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="false" UNSIGNED="true" DEFAULT="1" SEQUENCE="false"  COMMENT="Meetings can be public or non-public" PREVIOUS="completiongotomeeting" NEXT="timecreated"/>
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
     
