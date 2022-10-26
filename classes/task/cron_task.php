@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/forum/lib.php');
 require_once($CFG->dirroot . '/lib/completionlib.php');
-require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotoOAuth.php');
+require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.php');
 
 /**
  * The main scheduled task for the forum.
