@@ -217,7 +217,7 @@ function gotowebinar_delete_instance($id) {
 
 function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotoOAuth.php');
+    require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.php');
 
     $completion = new completion_info($course);
     $gotowebinar = $DB->get_record('gotowebinar', array('id' => $cm->instance));
