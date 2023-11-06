@@ -25,6 +25,13 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 require_once($CFG->dirroot . '/mod/gotowebinar/locallib.php');
 
+/**
+ * GoToWebinar module form
+ *
+ * @package mod_gotowebinar
+ * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mod_gotowebinar_mod_form extends moodleform_mod {
 
     public function definition() {
@@ -96,10 +103,20 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         return ['completiongotowebinargroup'];
     }
 
+    /**
+     * 
+     * @param type $data
+     * @return type
+     */
     public function completion_rule_enabled($data) {
         return (!empty($data['completionparticipationenabled']) && $data['completionparticipation'] != 0);
     }
-
+    /**
+     * 
+     * @param type $data
+     * @param type $files
+     * @return string
+     */
     public function validation($data, $files) {
 
         $errors = parent::validation($data, $files);
@@ -138,7 +155,10 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         }
         return $errors;
     }
-
+    /**
+     * 
+     * @return type
+     */
     public function get_data() {
         $data = parent::get_data();
         if (!$data) {
@@ -153,7 +173,11 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         }
         return $data;
     }
-
+    /**
+     * 
+     * @global type $DB
+     * @return type
+     */
     private function get_gotowebinar_licence() {
         global $DB;
         $licences = [];

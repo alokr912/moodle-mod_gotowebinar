@@ -25,6 +25,12 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotooauth.php');
 require_once($CFG->dirroot . '/lib/completionlib.php');
 
+/**
+ * This function create GoToWebinar meeting instance.
+ * @param type $gotowebinar
+ * @return boolean
+ * @throws moodle_exception
+ */
 function creategotowebibnar($gotowebinar) {
 
     $gotooauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
@@ -84,6 +90,13 @@ function creategotowebibnar($gotowebinar) {
     return false;
 }
 
+/**
+ * This function update GoToWebinar meeting instance.
+ * @param type $oldgotowebinar
+ * @param type $gotowebinar
+ * @return boolean
+ * @throws moodle_exception
+ */
 function updategotowebinar($oldgotowebinar, $gotowebinar) {
 
     $gotooauth = new mod_gotowebinar\GoToOAuth($oldgotowebinar->gotowebinar_licence);
@@ -139,6 +152,13 @@ function updategotowebinar($oldgotowebinar, $gotowebinar) {
     return false;
 }
 
+/**
+ * This function delete GoToWebinar meeting instance.
+ * @global type $CFG
+ * @param type $gotoid
+ * @param type $licence
+ * @return boolean
+ */
 function deletegotowebinar($gotoid, $licence) {
     global $CFG;
 
@@ -154,6 +174,13 @@ function deletegotowebinar($gotoid, $licence) {
     }
 }
 
+/**
+ * This function Get GoToWebinar meeting instance.
+ * @global type $USER
+ * @global type $DB
+ * @param type $gotowebinar
+ * @return type
+ */
 function get_gotowebinar($gotowebinar) {
     global $USER, $DB;
 
@@ -231,6 +258,11 @@ function get_gotowebinar($gotowebinar) {
     }
 }
 
+/**
+ * This function get GoToWebinar meeting instance.
+ * @param type $gotowebinar
+ * @return type
+ */
 function get_gotowebinarinfo($gotowebinar) {
 
     $gotooauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
@@ -238,6 +270,12 @@ function get_gotowebinarinfo($gotowebinar) {
     return $gotooauth->get("/G2W/rest/v2/organizers/{$$organiserkey}/webinars/{$gotowebinar->webinarkey}");
 }
 
+/**
+ * This function create GoToWebinar meeting instance.
+ * @global type $USER
+ * @global type $DB
+ * @global type $CFG
+ */
 function get_gotowebinar_attendance1() {
     global $USER, $DB, $CFG;
 
@@ -252,6 +290,12 @@ function get_gotowebinar_attendance1() {
     }
 }
 
+/**
+ * This function create GoToWebinar meeting audio info.
+ * @param type $webinarkey
+ * @param type $license
+ * @return type
+ */
 function get_gotowebinar_audio_info($webinarkey, $license) {
 
     $gotooauth = new mod_gotowebinar\GoToOAuth($license);
@@ -274,6 +318,10 @@ function get_gotowebinar_audio_info($webinarkey, $license) {
     return $response;
 }
 
+/**
+ * This function create GoToWebinar meeting instance.
+ * @global type $DB
+ */
 function sync_gotowebinar_completion_status() {
     global $DB;
     $starttime = time();
@@ -286,6 +334,10 @@ function sync_gotowebinar_completion_status() {
     }
 }
 
+/**
+ * This function create GoToWebinar meeting instance.
+ * @global type $DB
+ */
 function get_gotowebinar_attendance() {
     global $DB;
     $gotowebinars = $DB->get_records('gotowebinar');

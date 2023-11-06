@@ -23,8 +23,13 @@
 
 namespace mod_gotowebinar\event;
 
-
-
+/**
+ * The GoToWebinar instance created event class
+ *
+ * @package mod_gotowebinar
+ * @copyright  2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 class gotowebinar_created extends \core\event\base {
     /**
