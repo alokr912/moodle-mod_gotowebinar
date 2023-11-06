@@ -22,6 +22,10 @@
  */
 class backup_gotowebinar_activity_structure_step extends backup_activity_structure_step {
 
+    /**
+     * Define structure.
+     * @return mixed
+     */
     protected function define_structure() {
         $gotowebinar = new backup_nested_element('gotowebinar', ['id'],
                 ['course',

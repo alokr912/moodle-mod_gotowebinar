@@ -26,8 +26,11 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/gotowebinar/backup/moodle2/restore_gotowebinar_stepslib.php');
 
 /**
- * survey restore task that provides all the settings and steps to perform one
- * complete restore of the activity
+ * GoToWebinar module view file
+ *
+ * @package mod_gotowebinar
+ * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_gotowebinar_activity_task extends restore_activity_task {
 
@@ -73,9 +76,8 @@ class restore_gotowebinar_activity_task extends restore_activity_task {
 
     /**
      * Define the restore log rules that will be applied
-     * by the {@link restore_logs_processor} when restoring
-     * survey logs. It must return one array
-     * of {@link restore_log_rule} objects
+     * @link restore_logs_processor when restoring survey logs. It must return one array of
+     * @link restore_log_rule objects
      */
     public static function define_restore_log_rules() {
         $rules = [];
@@ -88,11 +90,9 @@ class restore_gotowebinar_activity_task extends restore_activity_task {
     }
 
     /**
-     * Define the restore log rules that will be applied
-     * by the {@link restore_logs_processor} when restoring
-     * course logs. It must return one array
-     * of {@link restore_log_rule} objects
-     *
+     * Define the restore log rules that will be applied by the.
+     * @link restore_logs_processor} when restoring  course logs. It must return one array of.
+     * @link restore_log_rule} objects
      * Note this rules are applied when restoring course logs
      * by the restore final task, but are defined here at
      * activity level. All them are rules not linked to any module instance (cmid = 0)

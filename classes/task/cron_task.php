@@ -29,18 +29,19 @@ require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotoOAuth.php');
 
 /**
  * The main scheduled task for the forum.
- *
  * @package    mod_gotowebinar
  * @copyright  2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cron_task extends \core\task\scheduled_task {
 
+    /**
+     * @var int The course ID.
+     */
     const LAST_SYNC_TIME = "GOTOWEBINAR_LAST_SYNC_TIME";
 
     /**
-     * 
-     * @global type $DB
+     * Cron task to sync attendance.
      */
     public function execute() {
         global $DB;
@@ -83,9 +84,9 @@ class cron_task extends \core\task\scheduled_task {
         }
         set_config(self::LAST_SYNC_TIME, $currenttime, 'gotowebinar');
     }
-    
+
     /**
-     * 
+     * Get the name of the task.
      * @return string
      */
     public function get_name(): string {

@@ -109,17 +109,17 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
 
     /**
      * Completion rules need to evaluated.
-     * @param type $data
-     * @return type
+     * @param array $data
+     * @return boolean
      */
     public function completion_rule_enabled($data) {
         return (!empty($data['completionparticipationenabled']) && $data['completionparticipation'] != 0);
     }
     /**
      * Validation method of the module creation form.
-     * @param type $data
-     * @param type $files
-     * @return string
+     * @param array $data
+     * @param array $files
+     * @return array $$errors
      */
     public function validation($data, $files) {
 
@@ -160,8 +160,8 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         return $errors;
     }
     /**
-     * Get Data
-     * @return type
+     * Get Data of completion.
+     * @return array $data
      */
     public function get_data() {
         $data = parent::get_data();
@@ -179,8 +179,7 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
     }
     /**
      * Get GoToWebinar license
-     * @global type $DB
-     * @return type
+     * @return array $licences
      */
     private function get_gotowebinar_licence() {
         global $DB;

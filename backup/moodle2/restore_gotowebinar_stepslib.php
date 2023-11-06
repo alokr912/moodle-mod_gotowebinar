@@ -22,6 +22,10 @@
  */
 class restore_gotowebinar_activity_structure_step extends restore_activity_structure_step {
 
+    /**
+     * Define structure.
+     * @return mixed
+     */
     protected function define_structure() {
 
         $paths = [];
@@ -32,6 +36,10 @@ class restore_gotowebinar_activity_structure_step extends restore_activity_struc
         return $this->prepare_activity_structure($paths);
     }
 
+    /**
+     * Process restore.
+     * @param mixed $data
+     */
     protected function process_gotowebinar($data) {
         global $DB;
 
@@ -47,6 +55,10 @@ class restore_gotowebinar_activity_structure_step extends restore_activity_struc
         $this->apply_activity_instance($newitemid);
     }
 
+    /**
+     * Process restore.
+     * @param mixed $data
+     */
     protected function process_gotowebinar_registrant($data) {
         global $DB;
 
@@ -60,6 +72,9 @@ class restore_gotowebinar_activity_structure_step extends restore_activity_struc
         // (child paths, file areas nor links decoder).
     }
 
+    /**
+     * After execute hook.
+     */
     protected function after_execute() {
         // Add survey related files, no need to match by itemname (just internally handled context).
     }

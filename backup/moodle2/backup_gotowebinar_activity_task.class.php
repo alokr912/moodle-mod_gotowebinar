@@ -25,15 +25,33 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/mod/gotowebinar/backup/moodle2/backup_gotowebinar_stepslib.php');
 
+/**
+ * GoToWebinar module view file
+ *
+ * @package mod_gotowebinar
+ * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class backup_gotowebinar_activity_task extends backup_activity_task {
 
+    /**
+     * Define setting config.
+     */
     protected function define_my_settings() {
     }
 
+    /**
+     * Define steps.
+     */
     protected function define_my_steps() {
         $this->add_step(new backup_gotowebinar_activity_structure_step('gotowebinar_structure', 'gotowebinar.xml'));
     }
 
+    /**
+     * Define encode links
+     * @param string $content
+     * @return boolen
+     */
     public static function encode_content_links($content) {
         global $CFG;
 

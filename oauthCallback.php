@@ -18,6 +18,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+/**
+ * GoToWebinar Oauth callback file.
+ * @package mod_gotowebinar
+ * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 require_once('../../config.php');
 require_once('./classes/gotooauth.php');
 $code = required_param('code', PARAM_RAW);

@@ -25,6 +25,11 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/calendar/lib.php');
 require_once('locallib.php');
 
+/**
+ * This method provide course module info.
+ * @param stdClass $coursemodule
+ * @return \cached_cm_info
+ */
 function gotowebinar_get_coursemodule_info($coursemodule) {
     global $DB;
 
@@ -37,6 +42,12 @@ function gotowebinar_get_coursemodule_info($coursemodule) {
     }
 }
 
+/**
+ * Add GotoWebinar instance.
+ * @param array $data
+ * @param array $mform
+ * @return boolean
+ */
 function gotowebinar_add_instance($data, $mform = null) {
 
     global $USER, $DB;
@@ -82,6 +93,7 @@ function gotowebinar_add_instance($data, $mform = null) {
 }
 
 /**
+ * GoToWebinar support features.
  * @uses FEATURE_GROUPS
  * @uses FEATURE_GROUPINGS
  * @uses FEATURE_GROUPMEMBERSONLY
@@ -121,8 +133,7 @@ function gotowebinar_supports($feature) {
  * Given an ID of an instance of this module,
  * this function will permanently delete the instance
  * and any data that depends on it.
- *
- * @param int $id Id of the module instance
+ * @param mixed $gotowebinar Id of the module instance
  * @return boolean Success/Failure
  */
 function gotowebinar_update_instance($gotowebinar) {
@@ -184,8 +195,7 @@ function gotowebinar_update_instance($gotowebinar) {
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
- *
- * @param object $adobeconnect An object from the form in mod_form.php
+ * @param int $id An object from the form in mod_form.php
  * @return boolean Success/Fail
  */
 function gotowebinar_delete_instance($id) {
@@ -209,12 +219,14 @@ function gotowebinar_delete_instance($id) {
     return false;
 }
 
-/*
- *
- *
- *
+/**
+ * Get activity completion state
+ * @param mixed $course
+ * @param mixed $cm
+ * @param int $userid
+ * @param mixed $type
+ * @return boolean
  */
-
 function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
     global $CFG, $DB;
     require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotoOAuth.php');

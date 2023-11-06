@@ -16,13 +16,15 @@
 
 /**
  * GoToMeeting module install  file
- *
- * @package mod_webinar
+ * @package mod_gotowebinar
  * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
+/**
+ * During installation.
+ * @return boolean
+ */
 function xmldb_gotowebinar_install() {
     global $DB, $CFG;
     $ch = curl_init('https://api.mdlintegration.com/v1/public/gotoinstance');

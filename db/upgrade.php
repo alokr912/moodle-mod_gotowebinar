@@ -21,7 +21,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
+/**
+ * GoToWebinar plugin upgrade.
+ * @param int $oldversion
+ * @return boolean
+ */
 function xmldb_gotowebinar_upgrade($oldversion) {
     global $CFG, $DB;
 

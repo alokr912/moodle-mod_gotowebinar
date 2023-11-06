@@ -27,7 +27,7 @@ require_once($CFG->dirroot . '/lib/completionlib.php');
 
 /**
  * This function create GoToWebinar meeting instance.
- * @param type $gotowebinar
+ * @param mixed $gotowebinar
  * @return boolean
  * @throws moodle_exception
  */
@@ -92,8 +92,8 @@ function creategotowebibnar($gotowebinar) {
 
 /**
  * This function update GoToWebinar meeting instance.
- * @param type $oldgotowebinar
- * @param type $gotowebinar
+ * @param array $oldgotowebinar
+ * @param array $gotowebinar
  * @return boolean
  * @throws moodle_exception
  */
@@ -154,13 +154,11 @@ function updategotowebinar($oldgotowebinar, $gotowebinar) {
 
 /**
  * This function delete GoToWebinar meeting instance.
- * @param type $gotoid
- * @param type $licence
+ * @param int $gotoid
+ * @param array $licence
  * @return boolean
  */
 function deletegotowebinar($gotoid, $licence) {
-    global $CFG;
-
     $gotooauth = new mod_gotowebinar\GoToOAuth($licence);
 
     $key = $gotooauth->organizerkey;
@@ -175,8 +173,8 @@ function deletegotowebinar($gotoid, $licence) {
 
 /**
  * This function Get GoToWebinar meeting instance.
- * @param type $gotowebinar
- * @return type
+ * @param array $gotowebinar
+ * @return boolean
  */
 function get_gotowebinar($gotowebinar) {
     global $USER, $DB;
@@ -257,46 +255,28 @@ function get_gotowebinar($gotowebinar) {
 
 /**
  * This function get GoToWebinar meeting instance.
- * @param type $gotowebinar
- * @return type
+ * @param array $gotowebinar
+ * @return boolean
  */
 function get_gotowebinarinfo($gotowebinar) {
 
     $gotooauth = new mod_gotowebinar\GoToOAuth($gotowebinar->gotowebinar_licence);
-    $$organiserkey = $gotooauth->organizerkey;
-    return $gotooauth->get("/G2W/rest/v2/organizers/{$$organiserkey}/webinars/{$gotowebinar->webinarkey}");
-}
-
-/**
- * This function create GoToWebinar meeting instance.
- * 
- */
-function get_gotowebinar_attendance1() {
-    global $USER, $DB, $CFG;
-
-    $gotooauth = new mod_gotowebinar\GoToOAuth();
-    $config = get_config(mod_gotowebinar\GoToOAuth::PLUGIN_NAME);
-    $organiserkey = $config->organizer_key;
-    $response = $gotooauth->get("/G2W/rest/v2/organizers/{$$organiserkey}/webinars/3633309102739548429/attendees");
-    if (!empty($response) && !empty($response->_embedded) && !empty($response->_embedded->attendeeParticipationResponses)) {
-        foreach ($response->_embedded->attendeeParticipationResponses as $at) {
-            echo 'aaa';
-        }
-    }
+    $organiserkey = $gotooauth->organizerkey;
+    return $gotooauth->get("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$gotowebinar->webinarkey}");
 }
 
 /**
  * This function create GoToWebinar meeting audio info.
- * @param type $webinarkey
- * @param type $license
- * @return type
+ * @param string $webinarkey
+ * @param int $license
+ * @return array
  */
 function get_gotowebinar_audio_info($webinarkey, $license) {
 
     $gotooauth = new mod_gotowebinar\GoToOAuth($license);
 
     $$organiserkey = $gotooauth->organizerkey;
-    $audioinfo = $gotooauth->get("/G2W/rest/v2/organizers/{$$organiserkey}/webinars/{$webinarkey}/audio");
+    $audioinfo = $gotooauth->get("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$webinarkey}/audio");
 
     if ($audioinfo && $audioinfo->confCallNumbers && $audioinfo->confCallNumbers->IT->toll) {
         $response['toll'] = $audioinfo->confCallNumbers->IT->toll;
@@ -315,7 +295,6 @@ function get_gotowebinar_audio_info($webinarkey, $license) {
 
 /**
  * This function create GoToWebinar meeting instance.
- * 
  */
 function sync_gotowebinar_completion_status() {
     global $DB;
@@ -331,7 +310,6 @@ function sync_gotowebinar_completion_status() {
 
 /**
  * This function create GoToWebinar meeting instance.
- * 
  */
 function get_gotowebinar_attendance() {
     global $DB;

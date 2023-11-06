@@ -36,30 +36,95 @@ use curl;
  */
 class GotoOAuth {
 
+    /**
+     * @var string
+     */
     public const BASE_URL = "https://api.getgo.com";
+
+    /**
+     * @var string
+     */
     public const OAUTH_URL = "https://authentication.logmeininc.com";
+
+    /**
+     * @var string
+     */
     public const PLUGIN_NAME = "gotowebinar";
+
+    /**
+     * @var string
+     */
     public const ACCESS_TOKEN = "access_token";
+
+    /**
+     * @var string
+     */
     public const REFRESH_TOKEN = "refresh_token";
+
+    /**
+     * @var string
+     */
     public const ORGANISER_KEY = "organizer_key";
+
+    /**
+     * @var string
+     */
     public const ACCOUNT_KEY = "account_key";
+
+    /**
+     * @var string
+     */
     public const ACCESS_TOKEN_TIME = "access_token_time";
+
+    /**
+     * @var string
+     */
     public const EXPIRY_TIME_IN_SECOND = 3500;
 
+    /**
+     * @var string
+     */
     private $accesstoken;
+
+    /**
+     * @var string
+     */
     private $refreshtoken;
+
+    /**
+     * @var string
+     */
     public $organizerkey;
+
+    /**
+     * @var string
+     */
     private $accountkey;
+
+    /**
+     * @var string
+     */
     private $accesstokentime;
+
+    /**
+     * @var string
+     */
     private $consumerkey;
+
+    /**
+     * @var string
+     */
     private $consumersecret;
+
+    /**
+     * @var string
+     */
     private $curl;
 
     /**
-     * 
-     * @global type $CFG
-     * @param type $code
-     * @return type
+     * Get Access Token with code.
+     * @param string $code
+     * @return string
      */
     public function getaccesstokenwithcode($code) {
         global $CFG;
@@ -74,16 +139,18 @@ class GotoOAuth {
         $this->curl->setHeader($headers);
 
         $redirecturl = $CFG->wwwroot . '/mod/gotomeeting/oauthCallback.php';
-        $data = ['redirect_uri' => $redirecturl, 'grant_type' => 'authorization_code', 'code' => $code];
+        $data = ['redirect_uri' => $redirecturl, 'grant_type' => 'authorization_code', 'code' => $code,
+            'client_id' => $this->consumerkey, ];
         $serveroutput = $this->curl->post(self::OAUTH_URL . '/oauth/token', self::encode_attributes($data));
 
-        $response = json_decode($serveroutput);
-        return $this->update_access_token($response);
+        $token = json_decode($serveroutput);
+        $profile = $this->getprofileinfo($token->access_token);
+        return $this->update_access_token($token, $profile);
     }
-    
+
     /**
-     * 
-     * @param type $refreshtoken
+     * Get Access Token with refresh token.
+     * @param mixed $refreshtoken
      * @return boolean
      */
     public function getaccesstokenwithrefreshtoken($refreshtoken) {
@@ -101,22 +168,21 @@ class GotoOAuth {
 
         $response = json_decode($serveroutput);
 
-        if (isset($response) && isset($response->access_token) && isset($response->refresh_token) &&
-                isset($response->organizer_key) && isset($response->account_key)) {
-            $this->update_access_token($response);
+        if (isset($response) && isset($response->access_token)) {
+            $profile = $this->getprofileinfo($response->access_token);
+            $response->email = $response->principal;
+            $this->update_access_token($response, $profile);
             $this->accesstoken = $response->access_token;
-            $this->refreshtoken = $response->refresh_token;
-
             $this->accesstokentime = time();
 
             return $response->access_token;
         }
         return false;
     }
-    
+
     /**
-     * 
-     * @return type
+     * Get Access Token if expired.
+     * @return string
      */
     public function getaccesstoken() {
 
@@ -127,12 +193,12 @@ class GotoOAuth {
             return $this->getaccesstokenwithrefreshtoken($this->refreshtoken);
         }
     }
-    
+
     /**
-     * 
-     * @param type $endpoint
-     * @param type $data
-     * @return type
+     * Post data to goto server.
+     * @param string $endpoint
+     * @param mixed $data
+     * @return array
      */
     public function post($endpoint, $data) {
 
@@ -146,11 +212,11 @@ class GotoOAuth {
 
         return json_decode($serveroutput);
     }
-    
+
     /**
-     * 
-     * @param type $endpoint
-     * @param type $data
+     * Post data to goto server.
+     * @param string $endpoint
+     * @param array $data
      * @return boolean
      */
     public function put($endpoint, $data) {
@@ -165,11 +231,11 @@ class GotoOAuth {
         $result = json_decode($serveroutput);
         return true;
     }
-    
+
     /**
-     * 
-     * @param type $endpoint
-     * @return type
+     * Post data to goto server.
+     * @param string $endpoint
+     * @return array
      */
     public function get($endpoint) {
 
@@ -184,9 +250,9 @@ class GotoOAuth {
     }
 
     /**
-     * 
-     * @param type $endpoint
-     * @param type $data
+     * Post data to goto server.
+     * @param string $endpoint
+     * @param array $data
      * @return boolean
      */
     public function delete($endpoint, $data = null) {
@@ -203,10 +269,10 @@ class GotoOAuth {
         }
         return false;
     }
-    
+
     /**
-     * 
-     * @return type
+     * Post data to goto server.
+     * @return string
      */
     public function getsetupstatus() {
 
@@ -226,9 +292,9 @@ class GotoOAuth {
     }
 
     /**
-     * 
-     * @param type $attributes
-     * @return type
+     * Encode attribute.
+     * @param array $attributes
+     * @return string
      */
     public static function encode_attributes($attributes) {
 
@@ -238,10 +304,10 @@ class GotoOAuth {
         }
         return join('&', $return);
     }
+
     /**
-     * 
-     * @global type $DB
-     * @param type $response
+     * Update access token.
+     * @param array $response
      * @return boolean
      */
     private function update_access_token($response) {
@@ -279,10 +345,11 @@ class GotoOAuth {
             return false;
         }
     }
+
     /**
-     * 
-     * @param type $accesstoken
-     * @return type
+     * Get Profile.
+     * @param string $accesstoken
+     * @return array
      */
     private function getprofileinfo($accesstoken) {
 
