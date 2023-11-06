@@ -27,12 +27,12 @@ $gotooauth = new mod_gotowebinar\GoToOAuth();
 global $CFG;
 $result = $gotooauth->getAccessTokenWithCode($code);
 $PAGE->set_context(context_system::instance());
-$PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php', array('code' => $code)));
+$PAGE->set_url(new moodle_url($CFG->wwwroot . '/mod/gotowebinar/oauthCallback.php', ['code' => $code]));
 $PAGE->set_pagelayout('admin');
 $PAGE->set_heading(get_string('oauth_status_heading', 'gotowebinar'));
 $PAGE->set_title(get_string('oauth_status_title', 'gotowebinar'));
 echo $OUTPUT->header();
-$link = new moodle_url('/admin/settings.php', array('section' => 'modsettinggotowebinar'));
+$link = new moodle_url('/admin/settings.php', ['section' => 'modsettinggotowebinar']);
 if ($result) {
 
     $successmessage = get_string('license_added_successfully', 'gotowebinar');

@@ -162,7 +162,7 @@ function get_gotowebinar($gotowebinar) {
     $context = context_course::instance($gotowebinar->course);
     $$organiserkey = $gotooauth->organizerkey;
 
-    if (has_capability('mod/gotowebinar:organiser', $context) OR has_capability('mod/gotowebinar:presenter', $context)) {
+    if (has_capability('mod/gotowebinar:organiser', $context) || has_capability('mod/gotowebinar:presenter', $context)) {
         $coorganisers = $gotooauth->get("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$gotowebinar->webinarkey}/coorganizers");
 
         if ($coorganisers) {
@@ -174,7 +174,7 @@ function get_gotowebinar($gotowebinar) {
             }
         } else {// No co organiser found , create one.
             $attributes = [['external' => true, 'organizerKey' => $organiserkey, 'givenName' => fullname($USER),
-                    'email' => $USER->email]];
+                    'email' => $USER->email, ], ];
             $response = $gotooauth->post("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$gotowebinar->webinarkey}/coorganizers",
                     $attributes);
 

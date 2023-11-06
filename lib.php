@@ -28,7 +28,7 @@ require_once('locallib.php');
 function gotowebinar_get_coursemodule_info($coursemodule) {
     global $DB;
 
-    if ($gotowebinar = $DB->get_record('gotowebinar', array('id' => $coursemodule->instance), 'id, name, startdatetime')) {
+    if ($gotowebinar = $DB->get_record('gotowebinar', ['id' => $coursemodule->instance], 'id, name, startdatetime')) {
         $info = new cached_cm_info();
         $info->name = $gotowebinar->name . "  " . userdate($gotowebinar->startdatetime, '%d/%m/%Y %H:%M');
         return $info;
@@ -69,11 +69,11 @@ function gotowebinar_add_instance($data, $mform = null) {
         $event->modulename = 'gotowebinar';
         calendar_event::create($event);
 
-        $event = \mod_gotowebinar\event\gotowebinar_created::create(array(
+        $event = \mod_gotowebinar\event\gotowebinar_created::create([
                     'objectid' => $data->id,
                     'context' => context_module::instance($data->coursemodule),
-                    'other' => array('modulename' => $data->name, 'startdatetime' => $data->startdatetime),
-        ));
+                    'other' => ['modulename' => $data->name, 'startdatetime' => $data->startdatetime],
+        ]);
         $event->trigger();
 
         return $data->id;
@@ -128,7 +128,7 @@ function gotowebinar_supports($feature) {
 function gotowebinar_update_instance($gotowebinar) {
     global $DB;
 
-    if (!($oldgotowebinar = $DB->get_record('gotowebinar', array('id' => $gotowebinar->instance)))) {
+    if (!($oldgotowebinar = $DB->get_record('gotowebinar', ['id' => $gotowebinar->instance]))) {
         return false;
     }
     $result = updateGoToWebinar($oldgotowebinar, $gotowebinar);
@@ -147,8 +147,8 @@ function gotowebinar_update_instance($gotowebinar) {
         $oldgotowebinar->sendcancellationemails = $gotowebinar->sendcancellationemails;
 
         $DB->update_record('gotowebinar', $oldgotowebinar);
-        $param = array('courseid' => $gotowebinar->course, 'instance' => $gotowebinar->instance,
-            'groupid' => 0, 'modulename' => 'gotowebinar');
+        $param = ['courseid' => $gotowebinar->course, 'instance' => $gotowebinar->instance,
+            'groupid' => 0, 'modulename' => 'gotowebinar', ];
 
         $eventid = $DB->get_field('event', 'id', $param);
 
@@ -171,11 +171,11 @@ function gotowebinar_update_instance($gotowebinar) {
             $calendarevent->update($event);
         }
     }
-    $event = \mod_gotowebinar\event\gotowebinar_updated::create(array(
+    $event = \mod_gotowebinar\event\gotowebinar_updated::create([
                 'objectid' => $gotowebinar->instance,
                 'context' => context_module::instance($gotowebinar->coursemodule),
-                'other' => array('modulename' => $gotowebinar->name, 'startdatetime' => $gotowebinar->startdatetime),
-    ));
+                'other' => ['modulename' => $gotowebinar->name, 'startdatetime' => $gotowebinar->startdatetime],
+    ]);
     $event->trigger();
     return $result;
 }
@@ -191,7 +191,7 @@ function gotowebinar_update_instance($gotowebinar) {
 function gotowebinar_delete_instance($id) {
     global $DB, $CFG;
 
-    if (!$gotowebinar = $DB->get_record('gotowebinar', array('id' => $id))) {
+    if (!$gotowebinar = $DB->get_record('gotowebinar', ['id' => $id])) {
 
         return false;
     }
@@ -220,7 +220,7 @@ function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
     require_once($CFG->dirroot . '/mod/gotowebinar/classes/gotoOAuth.php');
 
     $completion = new completion_info($course);
-    $gotowebinar = $DB->get_record('gotowebinar', array('id' => $cm->instance));
+    $gotowebinar = $DB->get_record('gotowebinar', ['id' => $cm->instance]);
 
     if (!$completion->is_enabled($cm) || empty($gotowebinar->completionparticipation)) {
 
@@ -235,7 +235,7 @@ function gotowebinar_get_completion_state($course, $cm, $userid, $type) {
     $response = $gotooauth->get("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$webinarkey}/attendees");
     foreach ($response->_embedded->attendeeParticipationResponses as $at) {
 
-        $gotowebinarregistrant = $DB->get_record('gotowebinar_registrant', array('registrantkey' => $at->registrantKey));
+        $gotowebinarregistrant = $DB->get_record('gotowebinar_registrant', ['registrantkey' => $at->registrantKey]);
 
         if ($gotowebinarregistrant && $requiredduration <= $at->attendanceTimeInSeconds) {
             return true;

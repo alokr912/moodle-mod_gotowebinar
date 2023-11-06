@@ -51,9 +51,9 @@ class restore_gotowebinar_activity_task extends restore_activity_task {
      * processed by the link decoder
      */
     public static function define_decode_contents() {
-        $contents = array();
+        $contents = [];
 
-        $contents[] = new restore_decode_content('gotowebinar', array('intro'), 'gotowebinar');
+        $contents[] = new restore_decode_content('gotowebinar', ['intro'], 'gotowebinar');
 
         return $contents;
     }
@@ -63,7 +63,7 @@ class restore_gotowebinar_activity_task extends restore_activity_task {
      * to the activity to be executed by the link decoder
      */
     public static function define_decode_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_decode_rule('GOTOLMSVIEWBYID', '/mod/gotowebinar/view.php?id=$1', 'course_module');
         $rules[] = new restore_decode_rule('GOTOLMSINDEX', '/mod/gotowebinar/index.php?id=$1', 'course');
@@ -78,7 +78,7 @@ class restore_gotowebinar_activity_task extends restore_activity_task {
      * of {@link restore_log_rule} objects
      */
     public static function define_restore_log_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('gotowebinar', 'add', 'view.php?id={course_module}', '{gotowebinar}');
         $rules[] = new restore_log_rule('gotowebinar', 'update', 'view.php?id={course_module}', '{gotowebinar}');
@@ -98,7 +98,7 @@ class restore_gotowebinar_activity_task extends restore_activity_task {
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     public static function define_restore_log_rules_for_course() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('gotowebinar', 'view all', 'index.php?id={course}', null);
 

@@ -26,7 +26,7 @@ require_once("lib.php");
 
 $id = required_param('id', PARAM_INT);   // Course module ID.
 
-$PAGE->set_url('/mod/gotowebinar/index.php', array('id' => $id));
+$PAGE->set_url('/mod/gotowebinar/index.php', ['id' => $id]);
 require_login();
 redirect("$CFG->wwwroot/course/view.php?id=$id");
 

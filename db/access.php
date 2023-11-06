@@ -29,9 +29,9 @@ $capabilities = [
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         ],
-        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+        'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
     'mod/gotowebinar:view' => [
         'captype' => 'read',
@@ -42,7 +42,7 @@ $capabilities = [
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         ],
     ],
     'mod/gotowebinar:presenter' => [
@@ -52,8 +52,8 @@ $capabilities = [
         'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ]
+            'manager' => CAP_ALLOW,
+        ],
     ],
     'mod/gotowebinar:organiser' => [
         'riskbitmask' => RISK_SPAM,
@@ -62,7 +62,7 @@ $capabilities = [
         'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         ],
     ],
 ];

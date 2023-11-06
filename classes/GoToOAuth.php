@@ -26,13 +26,18 @@ namespace mod_gotowebinar;
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/filelib.php');
 
-
-
 use curl;
 
+/**
+ * GoToWebinat OAuthentication file.
+ * @package mod_gotowebinar
+ * @copyright 2017 Alok Kumar Rai <alokr.mail@gmail.com,alokkumarrai@outlook.in>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class GotoOAuth {
 
     public const BASE_URL = "https://api.getgo.com";
+    public const OAUTH_URL = "https://authentication.logmeininc.com";
     public const PLUGIN_NAME = "gotowebinar";
     public const ACCESS_TOKEN = "access_token";
     public const REFRESH_TOKEN = "refresh_token";
@@ -58,13 +63,13 @@ class GotoOAuth {
         $headers = [
             'Authorization: Basic ' . $authorization,
             'Accept:application/json',
-            'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
+            'Content-Type: application/x-www-form-urlencoded; charset=utf-8',
         ];
         $this->curl->setHeader($headers);
 
         $redirecturl = $CFG->wwwroot . '/mod/gotomeeting/oauthCallback.php';
         $data = ['redirect_uri' => $redirecturl, 'grant_type' => 'authorization_code', 'code' => $code];
-        $serveroutput = $this->curl->post(self::BASE_URL . '/oauth/v2/token', self::encode_attributes($data));
+        $serveroutput = $this->curl->post(self::OAUTH_URL . '/oauth/token', self::encode_attributes($data));
 
         $response = json_decode($serveroutput);
         return $this->update_access_token($response);
@@ -75,13 +80,13 @@ class GotoOAuth {
 
         $headers = [
             'Authorization: Basic ' . base64_encode($gotowebinarconfig->consumer_key . ":" . $gotowebinarconfig->consumer_secret),
-            'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
+            'Content-Type: application/x-www-form-urlencoded; charset=utf-8',
         ];
 
         $this->curl->setHeader($headers);
         $data = ['grant_type' => 'refresh_token', 'refresh_token' => $refreshtoken];
 
-        $serveroutput = $this->curl->post(self::BASE_URL . '/oauth/v2/token', self::encode_attributes($data));
+        $serveroutput = $this->curl->post(self::OAUTH_URL . '/oauth/token', self::encode_attributes($data));
 
         $response = json_decode($serveroutput);
 
@@ -111,7 +116,7 @@ class GotoOAuth {
     public function post($endpoint, $data) {
 
         $headers = [
-            'Authorization: Bearer ' . $this->getAccessToken()
+            'Authorization: Bearer ' . $this->getAccessToken(),
         ];
 
         $this->curl->setHeader($headers);
@@ -124,7 +129,7 @@ class GotoOAuth {
     public function put($endpoint, $data) {
 
         $headers = [
-            'Authorization: Bearer ' . $this->getAccessToken()
+            'Authorization: Bearer ' . $this->getAccessToken(),
         ];
         $this->curl->setHeader($headers);
 
@@ -137,7 +142,7 @@ class GotoOAuth {
     public function get($endpoint) {
 
         $headers = [
-            'Authorization: Bearer ' . $this->getAccessToken()
+            'Authorization: Bearer ' . $this->getAccessToken(),
         ];
         $this->curl->setHeader($headers);
 
@@ -149,7 +154,7 @@ class GotoOAuth {
     public function delete($endpoint, $data = null) {
 
         $headers = [
-            'Authorization: Bearer ' . $this->getAccessToken()
+            'Authorization: Bearer ' . $this->getAccessToken(),
         ];
         $this->curl->setHeader($headers);
 
@@ -167,20 +172,20 @@ class GotoOAuth {
 
         $headers = [
             'Authorization: Basic ' . base64_encode($gotowebinarconfig->consumer_key . ":" . $gotowebinarconfig->consumer_secret),
-            'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
+            'Content-Type: application/x-www-form-urlencoded; charset=utf-8',
         ];
         $this->curl->setHeader($headers);
 
         $data = ['grant_type' => 'refresh_token', 'refresh_token' => $this->refreshtoken];
 
-        $serveroutput = $this->curl->post(self::BASE_URL . "/oauth/v2/token", self::encode_attributes($data));
+        $serveroutput = $this->curl->post(self::OAUTH_URL . "/oauth/token", self::encode_attributes($data));
 
         return json_decode($serveroutput);
     }
 
     public static function encode_attributes($attributes) {
 
-        $return = array();
+        $return = [];
         foreach ($attributes as $key => $value) {
             $return[] = urlencode($key) . '=' . urlencode($value);
         }
@@ -191,7 +196,7 @@ class GotoOAuth {
         global $DB;
         if (isset($response) && isset($response->access_token) && isset($response->refresh_token) &&
                 isset($response->organizer_key) && isset($response->account_key)) {
-            $gotowebinarlicence = $DB->get_record('gotowebinar_licence', array('organizer_key' => $response->organizer_key));
+            $gotowebinarlicence = $DB->get_record('gotowebinar_licence', ['organizer_key' => $response->organizer_key]);
 
             if (!$gotowebinarlicence) {
                 $gotowebinarlicence = new \stdClass();
@@ -221,6 +226,18 @@ class GotoOAuth {
         } else {
             return false;
         }
+    }
+
+    private function getprofileinfo($accesstoken) {
+
+        $headers = [
+            'Authorization: Bearer ' . $accesstoken,
+        ];
+        $this->curl->resetHeader();
+        $this->curl->setHeader($headers);
+        $serveroutput = $this->curl->get(self::BASE_URL . "/admin/rest/v1/me?includeAdmins=false&includeInvitation=false");
+
+        return json_decode($serveroutput);
     }
 
 }

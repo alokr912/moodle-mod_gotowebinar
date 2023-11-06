@@ -31,7 +31,7 @@ $action = optional_param('action', 'list', PARAM_TEXT);
 $sesskey = optional_param('sesskey', '', PARAM_RAW);
 require_admin();
 
-$gotowebinarlicence = $DB->get_record('gotowebinar_licence', array('id' => $id), '*', MUST_EXIST);
+$gotowebinarlicence = $DB->get_record('gotowebinar_licence', ['id' => $id], '*', MUST_EXIST);
 $enabled = false;
 $disabled = false;
 $settingslink = $CFG->wwwroot . '/admin/settings.php?section=modsettinggotowebinar';
@@ -59,7 +59,7 @@ if ($action == 'disable' && confirm_sesskey($sesskey)) {
 }
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_url('/mod/gotowebinar/license.php', array('id' => $id, 'action' => $action));
+$PAGE->set_url('/mod/gotowebinar/license.php', ['id' => $id, 'action' => $action]);
 $PAGE->set_title(get_string('license_title', 'mod_gotowebinar'));
 $PAGE->set_heading(get_string('license_heading', 'mod_gotowebinar'));
 echo $OUTPUT->header();

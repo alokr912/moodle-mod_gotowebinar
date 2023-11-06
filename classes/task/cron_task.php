@@ -47,7 +47,7 @@ class cron_task extends \core\task\scheduled_task {
         }
 
         $sql = "SELECT * FROM {gotowebinar} WHERE enddatetime >= :enddatetime1  AND enddatetime <= :enddatetime2 ";
-        $gotowebinars = $DB->get_records_sql($sql, array('enddatetime1' => $lastsync, 'enddatetime2' => $currenttime));
+        $gotowebinars = $DB->get_records_sql($sql, ['enddatetime1' => $lastsync, 'enddatetime2' => $currenttime]);
 
         foreach ($gotowebinars as $gotowebinar) {
             $course = get_course($gotowebinar->course);
@@ -69,7 +69,7 @@ class cron_task extends \core\task\scheduled_task {
             $response = $gototauth->get("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$webinarkey}/attendees");
             foreach ($response->_embedded->attendeeParticipationResponses as $at) {
 
-                $gotowebinarregistrant = $DB->get_record('gotowebinar_registrant', array('registrantkey' => $at->registrantKey));
+                $gotowebinarregistrant = $DB->get_record('gotowebinar_registrant', ['registrantkey' => $at->registrantKey]);
 
                 if ($gotowebinarregistrant && $requiredduration <= $at->attendanceTimeInSeconds) {
 

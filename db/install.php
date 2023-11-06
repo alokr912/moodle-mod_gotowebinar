@@ -28,10 +28,10 @@ function xmldb_gotowebinar_install() {
     $ch = curl_init('https://api.mdlintegration.com/v1/public/gotoinstance');
     curl_setopt($ch, CURLOPT_POST, true);
     $headers = [
-        'Content-Type: application/json'
+        'Content-Type: application/json',
     ];
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    $data = array();
+    $data = [];
     $data['wwwroot'] = $CFG->wwwroot;
     $data['siteidentifier'] = $CFG->siteidentifier;
     $data['country'] = $CFG->country;
