@@ -61,7 +61,7 @@ class gotowebinar_viewed extends \core\event\base {
      */
     public function get_url() {
         return new \moodle_url("/mod/gotowebinar/view.php",
-            array('id' => $this->objectid));
+            ['id' => $this->objectid]);
     }
 
     /**
@@ -70,7 +70,7 @@ class gotowebinar_viewed extends \core\event\base {
      * @return array|null
      */
     public function get_legacy_logdata() {
-        return array();
+        return [];
     }
 
     /**

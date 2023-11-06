@@ -84,16 +84,16 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
     public function add_completion_rules() {
         $mform = &$this->_form;
 
-        $group = array();
+        $group = [];
         $group[] = & $mform->createElement('checkbox', 'completionparticipationenabled', '',
                         get_string('completiongotowebinar', 'gotowebinar'));
-        $group[] = & $mform->createElement('text', 'completionparticipation', '', array('size' => 3, 'value' => 50));
+        $group[] = & $mform->createElement('text', 'completionparticipation', '', ['size' => 3, 'value' => 50]);
         $mform->setType('completionparticipation', PARAM_INT);
         $mform->addGroup($group, 'completiongotowebinargroup', get_string('completiongotowebinargroup', 'gotowebinar'),
-                array(' '), false);
+                [' '], false);
         $mform->addHelpButton('completiongotowebinargroup', 'completiongotowebinargroup', 'gotowebinar');
         $mform->disabledIf('completiongotowebinargroup', 'completionparticipationenabled', 'notchecked');
-        return array('completiongotowebinargroup');
+        return ['completiongotowebinargroup'];
     }
 
     public function completion_rule_enabled($data) {
@@ -156,8 +156,8 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
 
     private function get_gotowebinar_licence() {
         global $DB;
-        $licences = array();
-        $gotomeetinglicences = $DB->get_records('gotowebinar_licence', array('active' => 1), 'email');
+        $licences = [];
+        $gotomeetinglicences = $DB->get_records('gotowebinar_licence', ['active' => 1], 'email');
         foreach ($gotomeetinglicences as $gotomeetinglicence) {
 
             $licences[$gotomeetinglicence->id] = $gotomeetinglicence->email;

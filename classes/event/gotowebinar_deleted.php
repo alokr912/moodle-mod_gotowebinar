@@ -61,7 +61,7 @@ class gotowebinar_deleted extends \core\event\base {
      */
     public function get_url() {
         return new \moodle_url("/mod/glossary/editcategories.php",
-            array('id' => $this->contextinstanceid));
+            ['id' => $this->contextinstanceid]);
     }
 
     /**
@@ -70,9 +70,9 @@ class gotowebinar_deleted extends \core\event\base {
      * @return array|null
      */
     public function get_legacy_logdata() {
-        return array($this->courseid, 'glossary', 'delete category',
+        return [$this->courseid, 'glossary', 'delete category',
             "editcategories.php?id={$this->contextinstanceid}",
-            $this->objectid, $this->contextinstanceid);
+            $this->objectid, $this->contextinstanceid, ];
     }
 
     /**

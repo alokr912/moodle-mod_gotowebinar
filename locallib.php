@@ -33,43 +33,43 @@ function creategotowebibnar($gotowebinar) {
         throw new moodle_exception('incompletesetup', 'gotowebinar');
     }
 
-    $attributes = array();
+    $attributes = [];
     $dstoffset = dst_offset_on($gotowebinar->startdatetime, get_user_timezone());
     $attributes['subject'] = $gotowebinar->name;
     $attributes['description'] = clean_param($gotowebinar->intro, PARAM_NOTAGS);
 
     $startdate = usergetdate(usertime($gotowebinar->startdatetime - $dstoffset));
-    $timearray = array();
+    $timearray = [];
     $timearray['startTime'] = $startdate['year'] . '-' . $startdate['mon'] . '-' . $startdate['mday'] . 'T' .
             $startdate['hours'] . ':' . $startdate['minutes'] . ':' . $startdate['seconds'] . 'Z';
     $endtdate = usergetdate(usertime($gotowebinar->enddatetime - $dstoffset));
     $timearray['endTime'] = $endtdate['year'] . '-' . $endtdate['mon'] . '-' . $endtdate['mday'] . 'T' .
             $endtdate['hours'] . ':' . $endtdate['minutes'] . ':' . $endtdate['seconds'] . 'Z';
-    $attributes['times'] = array($timearray);
+    $attributes['times'] = [$timearray];
     $attributes['timeZone'] = get_user_timezone();
     $attributes['type'] = 'single_session';
     $attributes['isPasswordProtected'] = 'false';
 
-    $emailsettings = array();
+    $emailsettings = [];
     if (!empty($gotowebinar->confirmationemail)) {
-        $emailsettings['confirmationEmail'] = array('enabled' => true);
+        $emailsettings['confirmationEmail'] = ['enabled' => true];
     } else {
-        $emailsettings['confirmationEmail'] = array('enabled' => false);
+        $emailsettings['confirmationEmail'] = ['enabled' => false];
     }
     if (!empty($gotowebinar->reminderemail)) {
-        $emailsettings['reminderEmail'] = array('enabled' => true);
+        $emailsettings['reminderEmail'] = ['enabled' => true];
     } else {
-        $emailsettings['reminderEmail'] = array('enabled' => false);
+        $emailsettings['reminderEmail'] = ['enabled' => false];
     }
     if (!empty($gotowebinar->absenteefollowupemail)) {
-        $emailsettings['absenteeFollowUpEmail'] = array('enabled' => true);
+        $emailsettings['absenteeFollowUpEmail'] = ['enabled' => true];
     } else {
-        $emailsettings['absenteeFollowUpEmail'] = array('enabled' => false);
+        $emailsettings['absenteeFollowUpEmail'] = ['enabled' => false];
     }
     if (!empty($gotowebinar->attendeefollowupemail)) {
-        $emailsettings['attendeeFollowUpEmail'] = array('enabled' => true, 'includeCertificate' => true);
+        $emailsettings['attendeeFollowUpEmail'] = ['enabled' => true, 'includeCertificate' => true];
     } else {
-        $emailsettings['attendeeFollowUpEmail'] = array('enabled' => false);
+        $emailsettings['attendeeFollowUpEmail'] = ['enabled' => false];
     }
 
     $attributes['emailSettings'] = $emailsettings;
@@ -91,40 +91,40 @@ function updategotowebinar($oldgotowebinar, $gotowebinar) {
         throw new moodle_exception('incompletesetup', 'gotowebinar');
     }
 
-    $attributes = array();
+    $attributes = [];
     $dstoffset = dst_offset_on($gotowebinar->startdatetime, get_user_timezone());
     $attributes['subject'] = $gotowebinar->name;
     $attributes['description'] = clean_param($gotowebinar->intro, PARAM_NOTAGS);
     $attributes['timeZone'] = get_user_timezone();
 
     $startdate = usergetdate(usertime($gotowebinar->startdatetime - $dstoffset));
-    $timearray = array();
+    $timearray = [];
     $timearray['startTime'] = $startdate['year'] . '-' . $startdate['mon'] . '-' . $startdate['mday'] . 'T' .
             $startdate['hours'] . ':' . $startdate['minutes'] . ':' . $startdate['seconds'] . 'Z';
     $endtdate = usergetdate(usertime($gotowebinar->enddatetime - $dstoffset));
     $timearray['endTime'] = $endtdate['year'] . '-' . $endtdate['mon'] . '-' . $endtdate['mday'] . 'T' .
             $endtdate['hours'] . ':' . $endtdate['minutes'] . ':' . $endtdate['seconds'] . 'Z';
-    $attributes['times'] = array($timearray);
-    $emailsettings = array();
+    $attributes['times'] = [$timearray];
+    $emailsettings = [];
     if (!empty($gotowebinar->confirmationemail)) {
-        $emailsettings['confirmationEmail'] = array('enabled' => true);
+        $emailsettings['confirmationEmail'] = ['enabled' => true];
     } else {
-        $emailsettings['confirmationEmail'] = array('enabled' => false);
+        $emailsettings['confirmationEmail'] = ['enabled' => false];
     }
     if (!empty($gotowebinar->reminderemail)) {
-        $emailsettings['reminderEmail'] = array('enabled' => true);
+        $emailsettings['reminderEmail'] = ['enabled' => true];
     } else {
-        $emailsettings['reminderEmail'] = array('enabled' => false);
+        $emailsettings['reminderEmail'] = ['enabled' => false];
     }
     if (!empty($gotowebinar->absenteefollowupemail)) {
-        $emailsettings['absenteeFollowUpEmail'] = array('enabled' => true);
+        $emailsettings['absenteeFollowUpEmail'] = ['enabled' => true];
     } else {
-        $emailsettings['absenteeFollowUpEmail'] = array('enabled' => false);
+        $emailsettings['absenteeFollowUpEmail'] = ['enabled' => false];
     }
     if (!empty($gotowebinar->attendeefollowupemail)) {
-        $emailsettings['attendeeFollowUpEmail'] = array('enabled' => true, 'includeCertificate' => true);
+        $emailsettings['attendeeFollowUpEmail'] = ['enabled' => true, 'includeCertificate' => true];
     } else {
-        $emailsettings['attendeeFollowUpEmail'] = array('enabled' => false);
+        $emailsettings['attendeeFollowUpEmail'] = ['enabled' => false];
     }
 
     $attributes['emailSettings'] = $emailsettings;
@@ -173,8 +173,8 @@ function get_gotowebinar($gotowebinar) {
                 }
             }
         } else {// No co organiser found , create one.
-            $attributes = array(array('external' => true, 'organizerKey' => $organiserkey, 'givenName' => fullname($USER),
-                    'email' => $USER->email));
+            $attributes = [['external' => true, 'organizerKey' => $organiserkey, 'givenName' => fullname($USER),
+                    'email' => $USER->email]];
             $response = $gotooauth->post("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$gotowebinar->webinarkey}/coorganizers",
                     $attributes);
 
@@ -186,12 +186,12 @@ function get_gotowebinar($gotowebinar) {
     }
     // Now register and check registrant.
     $registrant = $DB->get_record('gotowebinar_registrant',
-            array('userid' => $USER->id, 'gotowebinarid' => $gotowebinar->webinarkey));
+            ['userid' => $USER->id, 'gotowebinarid' => $gotowebinar->webinarkey]);
 
     if ($registrant) {
         return $registrant->joinurl;
     } else {
-        $attributes = array();
+        $attributes = [];
         $attributes['firstName'] = $USER->firstname;
         $attributes['lastName'] = $USER->lastname;
         $attributes['email'] = $USER->email;
@@ -209,7 +209,7 @@ function get_gotowebinar($gotowebinar) {
         $attributes['numberOfEmployees'] = '';
         $attributes['purchasingTimeFrame'] = '';
         $attributes['purchasingRole'] = '';
-        $attributes['responses'] = array(array('questionKey' => 0, 'responseText' => '', 'answerKey' => 0));
+        $attributes['responses'] = [['questionKey' => 0, 'responseText' => '', 'answerKey' => 0]];
         $response = $gotooauth->post("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$gotowebinar->webinarkey}/registrants",
                 $attributes);
 
@@ -278,7 +278,7 @@ function sync_gotowebinar_completion_status() {
     global $DB;
     $starttime = time();
     $enddatetime1 = $enddatetime2 = time() - 15 * 60;
-    $filter = array('enddatetime1' => $enddatetime1, 'enddatetime2' => $enddatetime2);
+    $filter = ['enddatetime1' => $enddatetime1, 'enddatetime2' => $enddatetime2];
     $sql = "SELECT * FROM {gotowebinar}  enddatetime>=:enddatetime1 and enddatetime<=:enddatetime2 ";
     $webinars = $DB->get_records_sql($sql, $filter);
     foreach ($webinars as $webinar) {
@@ -310,7 +310,7 @@ function get_gotowebinar_attendance() {
         $response = $gotooauth->get("/G2W/rest/v2/organizers/{$organiserkey}/webinars/{$webinarkey}/attendees");
         foreach ($response->_embedded->attendeeParticipationResponses as $at) {
 
-            $gotowebinarregistrant = $DB->get_record('gotowebinar_registrant', array('registrantkey' => $at->registrantKey));
+            $gotowebinarregistrant = $DB->get_record('gotowebinar_registrant', ['registrantkey' => $at->registrantKey]);
 
             if ($gotowebinarregistrant && $requiredduration <= $at->attendanceTimeInSeconds) {
                 echo "Marking completion for ==>$gotowebinarregistrant->userid in CMID==>$cm->id";

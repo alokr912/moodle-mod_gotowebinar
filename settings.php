@@ -42,30 +42,30 @@ if ($ADMIN->fulltree) {
 
             $class = "btn-outline-danger";
             $url = new moodle_url('/mod/gotowebinar/license.php',
-                    array('id' => $licence->id, 'action' => 'disable', 'sesskey' => sesskey()));
+                    ['id' => $licence->id, 'action' => 'disable', 'sesskey' => sesskey()]);
 
             $actionshtml .= html_writer::start_div('row');
             $actionshtml .= html_writer::start_div('col-md-12');
-            $actionshtml .= html_writer::link($url, 'Disable ' . $licence->email, array('class' => 'btn btn-outline-danger'));
+            $actionshtml .= html_writer::link($url, 'Disable ' . $licence->email, ['class' => 'btn btn-outline-danger']);
             $actionshtml .= html_writer::end_div();
             $actionshtml .= html_writer::end_div();
         } else {
             $class = "btn-secondary";
             $url = new moodle_url('/mod/gotowebinar/license.php',
-                    array('id' => $licence->id, 'action' => 'enable', 'sesskey' => sesskey()));
+                    ['id' => $licence->id, 'action' => 'enable', 'sesskey' => sesskey()]);
             $actionshtml .= html_writer::start_div('row');
             $actionshtml .= html_writer::start_div('col-md-12');
-            $actionshtml .= html_writer::link($url, 'Enable ' . $licence->email, array('class' => 'btn btn-secondary'));
+            $actionshtml .= html_writer::link($url, 'Enable ' . $licence->email, ['class' => 'btn btn-secondary']);
             $actionshtml .= html_writer::end_div();
             $actionshtml .= html_writer::end_div();
         }
     }
 
     $class = "btn-primary";
-    $url = new moodle_url('/mod/gotowebinar/setup.php', array('sesskey' => sesskey()));
+    $url = new moodle_url('/mod/gotowebinar/setup.php', ['sesskey' => sesskey()]);
     $actionshtml .= html_writer::start_div('row mt-5 mb-5');
     $actionshtml .= html_writer::start_div('col-md-12');
-    $actionshtml .= html_writer::link($url, get_string('setup', 'mod_gotowebinar'), array('class' => 'btn btn-secondary'));
+    $actionshtml .= html_writer::link($url, get_string('setup', 'mod_gotowebinar'), ['class' => 'btn btn-secondary']);
     $actionshtml .= html_writer::end_div();
     $actionshtml .= html_writer::end_div();
     $actionshtml .= html_writer::end_div();
