@@ -154,7 +154,6 @@ function updategotowebinar($oldgotowebinar, $gotowebinar) {
 
 /**
  * This function delete GoToWebinar meeting instance.
- * @global type $CFG
  * @param type $gotoid
  * @param type $licence
  * @return boolean
@@ -176,8 +175,6 @@ function deletegotowebinar($gotoid, $licence) {
 
 /**
  * This function Get GoToWebinar meeting instance.
- * @global type $USER
- * @global type $DB
  * @param type $gotowebinar
  * @return type
  */
@@ -272,9 +269,7 @@ function get_gotowebinarinfo($gotowebinar) {
 
 /**
  * This function create GoToWebinar meeting instance.
- * @global type $USER
- * @global type $DB
- * @global type $CFG
+ * 
  */
 function get_gotowebinar_attendance1() {
     global $USER, $DB, $CFG;
@@ -320,7 +315,7 @@ function get_gotowebinar_audio_info($webinarkey, $license) {
 
 /**
  * This function create GoToWebinar meeting instance.
- * @global type $DB
+ * 
  */
 function sync_gotowebinar_completion_status() {
     global $DB;
@@ -336,7 +331,7 @@ function sync_gotowebinar_completion_status() {
 
 /**
  * This function create GoToWebinar meeting instance.
- * @global type $DB
+ * 
  */
 function get_gotowebinar_attendance() {
     global $DB;

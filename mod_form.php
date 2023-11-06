@@ -34,6 +34,10 @@ require_once($CFG->dirroot . '/mod/gotowebinar/locallib.php');
  */
 class mod_gotowebinar_mod_form extends moodleform_mod {
 
+    /**
+     * Form definition
+     * @throws moodle_exception
+     */
     public function definition() {
 
         $mform = $this->_form;
@@ -104,7 +108,7 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
     }
 
     /**
-     * 
+     * Completion rules need to evaluated.
      * @param type $data
      * @return type
      */
@@ -112,7 +116,7 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         return (!empty($data['completionparticipationenabled']) && $data['completionparticipation'] != 0);
     }
     /**
-     * 
+     * Validation method of the module creation form.
      * @param type $data
      * @param type $files
      * @return string
@@ -156,7 +160,7 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         return $errors;
     }
     /**
-     * 
+     * Get Data
      * @return type
      */
     public function get_data() {
@@ -174,7 +178,7 @@ class mod_gotowebinar_mod_form extends moodleform_mod {
         return $data;
     }
     /**
-     * 
+     * Get GoToWebinar license
      * @global type $DB
      * @return type
      */

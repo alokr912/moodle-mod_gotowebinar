@@ -55,6 +55,12 @@ class GotoOAuth {
     private $consumersecret;
     private $curl;
 
+    /**
+     * 
+     * @global type $CFG
+     * @param type $code
+     * @return type
+     */
     public function getaccesstokenwithcode($code) {
         global $CFG;
 
@@ -74,7 +80,12 @@ class GotoOAuth {
         $response = json_decode($serveroutput);
         return $this->update_access_token($response);
     }
-
+    
+    /**
+     * 
+     * @param type $refreshtoken
+     * @return boolean
+     */
     public function getaccesstokenwithrefreshtoken($refreshtoken) {
         $gotowebinarconfig = get_config(self::PLUGIN_NAME);
 
@@ -102,7 +113,11 @@ class GotoOAuth {
         }
         return false;
     }
-
+    
+    /**
+     * 
+     * @return type
+     */
     public function getaccesstoken() {
 
         if (isset($this->accesstokentime) && !empty($this->accesstokentime) &&
@@ -112,7 +127,13 @@ class GotoOAuth {
             return $this->getaccesstokenwithrefreshtoken($this->refreshtoken);
         }
     }
-
+    
+    /**
+     * 
+     * @param type $endpoint
+     * @param type $data
+     * @return type
+     */
     public function post($endpoint, $data) {
 
         $headers = [
@@ -125,7 +146,13 @@ class GotoOAuth {
 
         return json_decode($serveroutput);
     }
-
+    
+    /**
+     * 
+     * @param type $endpoint
+     * @param type $data
+     * @return boolean
+     */
     public function put($endpoint, $data) {
 
         $headers = [
@@ -138,7 +165,12 @@ class GotoOAuth {
         $result = json_decode($serveroutput);
         return true;
     }
-
+    
+    /**
+     * 
+     * @param type $endpoint
+     * @return type
+     */
     public function get($endpoint) {
 
         $headers = [
@@ -151,6 +183,12 @@ class GotoOAuth {
         return json_decode($serveroutput);
     }
 
+    /**
+     * 
+     * @param type $endpoint
+     * @param type $data
+     * @return boolean
+     */
     public function delete($endpoint, $data = null) {
 
         $headers = [
@@ -165,7 +203,11 @@ class GotoOAuth {
         }
         return false;
     }
-
+    
+    /**
+     * 
+     * @return type
+     */
     public function getsetupstatus() {
 
         $gotowebinarconfig = get_config(self::PLUGIN_NAME);
@@ -183,6 +225,11 @@ class GotoOAuth {
         return json_decode($serveroutput);
     }
 
+    /**
+     * 
+     * @param type $attributes
+     * @return type
+     */
     public static function encode_attributes($attributes) {
 
         $return = [];
@@ -191,7 +238,12 @@ class GotoOAuth {
         }
         return join('&', $return);
     }
-
+    /**
+     * 
+     * @global type $DB
+     * @param type $response
+     * @return boolean
+     */
     private function update_access_token($response) {
         global $DB;
         if (isset($response) && isset($response->access_token) && isset($response->refresh_token) &&
@@ -227,7 +279,11 @@ class GotoOAuth {
             return false;
         }
     }
-
+    /**
+     * 
+     * @param type $accesstoken
+     * @return type
+     */
     private function getprofileinfo($accesstoken) {
 
         $headers = [
